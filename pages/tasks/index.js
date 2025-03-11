@@ -14,21 +14,21 @@ Page({
 
   onLoad: function() {
     this.checkLoginStatus();
-    // wx.cloud.callFunction({
-    //   name: 'initTaskCollection',
-    //   data: {},
-    //   success: res => {
-    //     console.log('[云函数] [initTaskCollection] 调用成功', res);
-    //   },
-    //   fail: err => {
-    //     console.error('[云函数] [getTasks] 调用失败', err);
-    //     this.setData({ loading: false });
-    //     wx.showToast({
-    //       title: '获取任务数据失败',
-    //       icon: 'none'
-    //     });
-    //   }
-    // });
+    wx.cloud.callFunction({
+      name: 'initTaskCollection',
+      data: {},
+      success: res => {
+        console.log('[云函数] [initTaskCollection] 调用成功', res);
+      },
+      fail: err => {
+        console.error('[云函数] [getTasks] 调用失败', err);
+        this.setData({ loading: false });
+        wx.showToast({
+          title: '获取任务数据失败',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   onShow: function() {
@@ -141,10 +141,14 @@ Page({
               // 对每个task，根据completed状态，添加buttonText字段
               taskGroups.forEach(group => {
                 group.tasks.forEach(task => {
-                  totalTasks++;
+                  if (task.category === 'daily') {
+                    totalTasks++;
+                  }
                   if (task.completed) {
-                    completedTasks++;
-                    todayEarnedPoints += task.points;
+                    if (task.category === 'daily') {
+                      completedTasks++;
+                      todayEarnedPoints += task.points;
+                    }
                     task.buttonText = '已完成';
                   } else {
                     task.buttonText = '去完成';

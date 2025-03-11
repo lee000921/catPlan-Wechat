@@ -26,23 +26,176 @@ exports.main = async (event, context) => {
     // 预定义的任务数据
     const tasks = [
       {
-        title: '拍摄公园风景照',
-        desc: '需要拍摄5张公园的风景照片，要求画面清晰，构图美观，能够展现公园的自然美景和人文特色。最好在阳光明媚的天气拍摄，避免阴雨天气。',
-        points: 50,
+        title: '健康小猫咪——早睡',
+        desc: '每天晚上12点前睡觉，保证充足的睡眠时间，有助于身体恢复和精神集中。建议使用闹钟提醒自己按时睡觉。',
+        points: 1,
         category: 'daily',
         progress: 0,
         maxProgress: 1,
         completed: false
       },
       {
-        title: '记录早餐制作过程',
-        desc: '拍摄制作健康早餐的全过程，包括食材准备、烹饪和成品展示。要求记录至少3个步骤，最终成品图片要求清晰美观，能够展现食物的色香味。',
-        points: 30,
+        title: '健康小猫咪——早起',
+        desc: '每天早上8点前起床，保证充足的睡眠时间，有助于身体恢复和精神集中。建议使用闹钟提醒自己按时起床。',
+        points: 1,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '健康小猫咪——运动',
+        desc: '每天至少进行30分钟的有氧运动，如快走、慢跑、游泳等。可以选择自己喜欢的运动方式，坚持每天进行。',
+        points: 1,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '勤奋小猫咪——学习时长1小时',
+        desc: '每天学习1小时，可以选择自己喜欢的学习方式，如看书、听讲座、做练习等。',
+        points: 1,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '勤奋小猫咪——学习时长3小时',
+        desc: '每天学习3小时，可以选择自己喜欢的学习方式，如看书、听讲座、做练习等。',
+        points: 1,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '勤奋小猫咪——学习时长5小时',
+        desc: '每天学习5小时，可以选择自己喜欢的学习方式，如看书、听讲座、做练习等。',
+        points: 2,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '勤奋小猫咪——学习时长8小时',
+        desc: '每天学习8小时，可以选择自己喜欢的学习方式，如看书、听讲座、做练习等。',
+        points: 2,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '勤奋小猫咪——学习时长10小时',
+        desc: '每天学习10小时，可以选择自己喜欢的学习方式，如看书、听讲座、做练习等。',
+        points: 3,
+        category: 'daily',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计完成5天任务',
+        desc: '连续5天每天都完成任务，可以获得额外的奖励。',
+        points: 1,
         category: 'growth',
         progress: 0,
-        maxProgress: 3,
+        maxProgress: 1,
         completed: false
-      } 
+      },
+      {
+        title: '坚持小猫咪——累计完成10天任务',
+        desc: '连续10天每天都完成任务，可以获得额外的奖励。',
+        points: 2,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计完成15天任务',
+        desc: '连续15天每天都完成任务，可以获得额外的奖励。',
+        points: 3,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计完成20天任务',
+        desc: '连续20天每天都完成任务，可以获得额外的奖励。',
+        points: 4,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计完成25天任务',
+        desc: '连续25天每天都完成任务，可以获得额外的奖励。',
+        points: 5,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计看完5节网课',
+        desc: '累计看完5节网课，可以获得额外的奖励。',
+        points: 1,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计看完10节网课',
+        desc: '累计看完10节网课，可以获得额外的奖励。',
+        points: 2,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计背100个单词',
+        desc: '累计背100个单词，可以获得额外的奖励。',
+        points: 1,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——累计背200个单词',
+        desc: '累计背200个单词，可以获得额外的奖励。',
+        points: 2,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——完成内科学复习',
+        desc: '完成内科学复习，可以获得额外的奖励。',
+        points: 100,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      },
+      {
+        title: '坚持小猫咪——完成外科学复习',
+        desc: '完成外科学复习，可以获得额外的奖励。',
+        points: 100,
+        category: 'growth',
+        progress: 0,
+        maxProgress: 1,
+        completed: false
+      }
     ]
 
     // 批量添加任务到数据库
