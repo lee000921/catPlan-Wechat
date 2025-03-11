@@ -56,11 +56,7 @@ exports.main = async (event, context) => {
         consecutiveCheckinDays: 0,
         lastCheckinDate: null,
         registerTime: now,
-        tasks: {
-          daily: [], // 日常任务完成记录
-          newbie: [], // 新手任务完成记录
-          growth: []  // 成长任务完成记录
-        },
+        tasks: [], // 只记录已完成的任务ID和完成时间
         exchanges: [] // 兑换记录
       }
       

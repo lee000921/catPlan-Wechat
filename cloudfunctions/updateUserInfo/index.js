@@ -34,11 +34,7 @@ exports.main = async (event, context) => {
         lastCheckinDate: null,
         registerTime: db.serverDate(),
         updateTime: db.serverDate(),
-        tasks: {
-          daily: [],
-          newbie: [],
-          growth: []
-        },
+        tasks: [], // 只记录已完成的任务ID和完成时间
         exchanges: []
       }
       
