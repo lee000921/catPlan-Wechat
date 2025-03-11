@@ -10,110 +10,110 @@ Page({
     tabs: ['全部', '实物奖品', '虚拟奖品', '优惠券'],
     exchangeItems: [],
     allItems: [
-      {
-        id: 'item_1',
-        title: '精美猫咪钥匙扣',
-        image: '/assets/images/exchange/keychain.png',
-        points: 200,
-        originalPrice: '¥15',
-        type: '实物奖品',
-        stock: 99,
-        sold: 120,
-        description: '可爱的猫咪造型钥匙扣，采用优质材料制作，手感舒适。',
-        exchangeLimit: 2,
-        deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      },
-      {
-        id: 'item_2',
-        title: '猫咪主题保温杯',
-        image: '/assets/images/exchange/cup.png',
-        points: 500,
-        originalPrice: '¥59',
-        type: '实物奖品',
-        stock: 50,
-        sold: 75,
-        description: '304不锈钢内胆，12小时保温，可爱猫咪图案，容量500ml。',
-        exchangeLimit: 1,
-        deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      },
-      {
-        id: 'item_3',
-        title: '1个月会员卡',
-        image: '/assets/images/exchange/membership.png',
-        points: 300,
-        originalPrice: '¥30',
-        type: '虚拟奖品',
-        stock: 999,
-        sold: 500,
-        description: '1个月会员特权，享受专属功能和服务。',
-        exchangeLimit: 12,
-        deliveryInfo: '兑换后自动激活，无需手动操作。'
-      },
-      {
-        id: 'item_4',
-        title: '¥5元优惠券',
-        image: '/assets/images/exchange/coupon.png',
-        points: 50,
-        originalPrice: '¥5',
-        type: '优惠券',
-        stock: 999,
-        sold: 2000,
-        description: '满30元可用，有效期30天。',
-        exchangeLimit: 10,
-        deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      },
-      {
-        id: 'item_5',
-        title: '¥10元优惠券',
-        image: '/assets/images/exchange/coupon.png',
-        points: 100,
-        originalPrice: '¥10',
-        type: '优惠券',
-        stock: 999,
-        sold: 1500,
-        description: '满60元可用，有效期30天。',
-        exchangeLimit: 5,
-        deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      },
-      {
-        id: 'item_6',
-        title: '猫咪抱枕',
-        image: '/assets/images/exchange/pillow.png',
-        points: 800,
-        originalPrice: '¥89',
-        type: '实物奖品',
-        stock: 30,
-        sold: 45,
-        description: '超柔软猫咪造型抱枕，材质舒适，尺寸40*40cm。',
-        exchangeLimit: 1,
-        deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      },
-      {
-        id: 'item_7',
-        title: '头像框30天',
-        image: '/assets/images/exchange/avatar_frame.png',
-        points: 100,
-        originalPrice: '¥10',
-        type: '虚拟奖品',
-        stock: 999,
-        sold: 300,
-        description: '专属猫咪头像框，使用期限30天。',
-        exchangeLimit: 12,
-        deliveryInfo: '兑换后自动激活，可在个人主页查看。'
-      },
-      {
-        id: 'item_8',
-        title: '¥20元优惠券',
-        image: '/assets/images/exchange/coupon.png',
-        points: 180,
-        originalPrice: '¥20',
-        type: '优惠券',
-        stock: 500,
-        sold: 800,
-        description: '满100元可用，有效期30天。',
-        exchangeLimit: 3,
-        deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      }
+      // {
+      //   id: 'item_1',
+      //   title: '盒马有机苹果汁',
+      //   image: '/assets/images/exchange/keychain.png',
+      //   points: 6,
+      //   originalPrice: '¥29.9',
+      //   type: '实物奖品',
+      //   stock: 99,
+      //   sold: 99,
+      //   description: '香甜可口的有机苹果汁，无添加糖分，营养健康。',
+      //   exchangeLimit: 99,
+      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
+      // },
+      // {
+      //   id: 'item_2',
+      //   title: '猫咪主题保温杯',
+      //   image: '/assets/images/exchange/cup.png',
+      //   points: 500,
+      //   originalPrice: '¥59',
+      //   type: '实物奖品',
+      //   stock: 50,
+      //   sold: 75,
+      //   description: '304不锈钢内胆，12小时保温，可爱猫咪图案，容量500ml。',
+      //   exchangeLimit: 1,
+      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
+      // },
+      // {
+      //   id: 'item_3',
+      //   title: '1个月会员卡',
+      //   image: '/assets/images/exchange/membership.png',
+      //   points: 300,
+      //   originalPrice: '¥30',
+      //   type: '虚拟奖品',
+      //   stock: 999,
+      //   sold: 500,
+      //   description: '1个月会员特权，享受专属功能和服务。',
+      //   exchangeLimit: 12,
+      //   deliveryInfo: '兑换后自动激活，无需手动操作。'
+      // },
+      // {
+      //   id: 'item_4',
+      //   title: '¥5元优惠券',
+      //   image: '/assets/images/exchange/coupon.png',
+      //   points: 50,
+      //   originalPrice: '¥5',
+      //   type: '优惠券',
+      //   stock: 999,
+      //   sold: 2000,
+      //   description: '满30元可用，有效期30天。',
+      //   exchangeLimit: 10,
+      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
+      // },
+      // {
+      //   id: 'item_5',
+      //   title: '¥10元优惠券',
+      //   image: '/assets/images/exchange/coupon.png',
+      //   points: 100,
+      //   originalPrice: '¥10',
+      //   type: '优惠券',
+      //   stock: 999,
+      //   sold: 1500,
+      //   description: '满60元可用，有效期30天。',
+      //   exchangeLimit: 5,
+      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
+      // },
+      // {
+      //   id: 'item_6',
+      //   title: '猫咪抱枕',
+      //   image: '/assets/images/exchange/pillow.png',
+      //   points: 800,
+      //   originalPrice: '¥89',
+      //   type: '实物奖品',
+      //   stock: 30,
+      //   sold: 45,
+      //   description: '超柔软猫咪造型抱枕，材质舒适，尺寸40*40cm。',
+      //   exchangeLimit: 1,
+      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
+      // },
+      // {
+      //   id: 'item_7',
+      //   title: '头像框30天',
+      //   image: '/assets/images/exchange/avatar_frame.png',
+      //   points: 100,
+      //   originalPrice: '¥10',
+      //   type: '虚拟奖品',
+      //   stock: 999,
+      //   sold: 300,
+      //   description: '专属猫咪头像框，使用期限30天。',
+      //   exchangeLimit: 12,
+      //   deliveryInfo: '兑换后自动激活，可在个人主页查看。'
+      // },
+      // {
+      //   id: 'item_8',
+      //   title: '¥20元优惠券',
+      //   image: '/assets/images/exchange/coupon.png',
+      //   points: 180,
+      //   originalPrice: '¥20',
+      //   type: '优惠券',
+      //   stock: 500,
+      //   sold: 800,
+      //   description: '满100元可用，有效期30天。',
+      //   exchangeLimit: 3,
+      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
+      // }
     ]
   },
 
@@ -125,6 +125,7 @@ Page({
   onShow: function() {
     if (this.data.isLogin) {
       this.refreshUserInfo();
+      this.fetchGoodsData();
     }
   },
 
@@ -143,6 +144,29 @@ Page({
         loading: false
       });
     }
+  },
+
+  // 获取商品数据
+  fetchGoodsData: function() {
+    wx.cloud.callFunction({
+      name: 'getGoods',
+      data: {},
+      success: res => {
+        console.log('[云函数] [getExchangeItems] 调用成功', res);
+        const allItems = res.result.data;
+        this.setData({
+          allItems: allItems
+        });
+        this.filterItems(this.data.currentTab);
+      },
+      fail: err => {
+        console.error('[云函数] [getExchangeItems] 调用失败', err);
+        wx.showToast({
+          title: '获取商品数据失败',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   // 刷新用户信息
