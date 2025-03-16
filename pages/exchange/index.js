@@ -6,120 +6,11 @@ Page({
     userInfo: null,
     isLogin: false,
     loading: true,
-    currentTab: 0,
-    tabs: ['全部', '实物奖品', '虚拟奖品', '优惠券'],
-    exchangeItems: [],
-    allItems: [
-      // {
-      //   id: 'item_1',
-      //   title: '盒马有机苹果汁',
-      //   image: '/assets/images/exchange/keychain.png',
-      //   points: 6,
-      //   originalPrice: '¥29.9',
-      //   type: '实物奖品',
-      //   stock: 99,
-      //   sold: 99,
-      //   description: '香甜可口的有机苹果汁，无添加糖分，营养健康。',
-      //   exchangeLimit: 99,
-      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      // },
-      // {
-      //   id: 'item_2',
-      //   title: '猫咪主题保温杯',
-      //   image: '/assets/images/exchange/cup.png',
-      //   points: 500,
-      //   originalPrice: '¥59',
-      //   type: '实物奖品',
-      //   stock: 50,
-      //   sold: 75,
-      //   description: '304不锈钢内胆，12小时保温，可爱猫咪图案，容量500ml。',
-      //   exchangeLimit: 1,
-      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      // },
-      // {
-      //   id: 'item_3',
-      //   title: '1个月会员卡',
-      //   image: '/assets/images/exchange/membership.png',
-      //   points: 300,
-      //   originalPrice: '¥30',
-      //   type: '虚拟奖品',
-      //   stock: 999,
-      //   sold: 500,
-      //   description: '1个月会员特权，享受专属功能和服务。',
-      //   exchangeLimit: 12,
-      //   deliveryInfo: '兑换后自动激活，无需手动操作。'
-      // },
-      // {
-      //   id: 'item_4',
-      //   title: '¥5元优惠券',
-      //   image: '/assets/images/exchange/coupon.png',
-      //   points: 50,
-      //   originalPrice: '¥5',
-      //   type: '优惠券',
-      //   stock: 999,
-      //   sold: 2000,
-      //   description: '满30元可用，有效期30天。',
-      //   exchangeLimit: 10,
-      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      // },
-      // {
-      //   id: 'item_5',
-      //   title: '¥10元优惠券',
-      //   image: '/assets/images/exchange/coupon.png',
-      //   points: 100,
-      //   originalPrice: '¥10',
-      //   type: '优惠券',
-      //   stock: 999,
-      //   sold: 1500,
-      //   description: '满60元可用，有效期30天。',
-      //   exchangeLimit: 5,
-      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      // },
-      // {
-      //   id: 'item_6',
-      //   title: '猫咪抱枕',
-      //   image: '/assets/images/exchange/pillow.png',
-      //   points: 800,
-      //   originalPrice: '¥89',
-      //   type: '实物奖品',
-      //   stock: 30,
-      //   sold: 45,
-      //   description: '超柔软猫咪造型抱枕，材质舒适，尺寸40*40cm。',
-      //   exchangeLimit: 1,
-      //   deliveryInfo: '兑换后需填写收货地址，预计7-15天内发货。'
-      // },
-      // {
-      //   id: 'item_7',
-      //   title: '头像框30天',
-      //   image: '/assets/images/exchange/avatar_frame.png',
-      //   points: 100,
-      //   originalPrice: '¥10',
-      //   type: '虚拟奖品',
-      //   stock: 999,
-      //   sold: 300,
-      //   description: '专属猫咪头像框，使用期限30天。',
-      //   exchangeLimit: 12,
-      //   deliveryInfo: '兑换后自动激活，可在个人主页查看。'
-      // },
-      // {
-      //   id: 'item_8',
-      //   title: '¥20元优惠券',
-      //   image: '/assets/images/exchange/coupon.png',
-      //   points: 180,
-      //   originalPrice: '¥20',
-      //   type: '优惠券',
-      //   stock: 500,
-      //   sold: 800,
-      //   description: '满100元可用，有效期30天。',
-      //   exchangeLimit: 3,
-      //   deliveryInfo: '兑换后自动发放至账户，可在"我的-优惠券"中查看。'
-      // }
-    ]
+    exchangeItems: []
   },
 
   onLoad: function() {
     this.checkLoginStatus();
-    this.filterItems(0);
   },
 
   onShow: function() {
@@ -138,6 +29,7 @@ Page({
         isLogin: true,
         loading: false
       });
+      this.fetchGoodsData();
     } else {
       this.setData({
         isLogin: false,
@@ -152,15 +44,21 @@ Page({
       name: 'getGoods',
       data: {},
       success: res => {
-        console.log('[云函数] [getExchangeItems] 调用成功', res);
-        const allItems = res.result.data;
-        this.setData({
-          allItems: allItems
-        });
-        this.filterItems(this.data.currentTab);
+        console.log('[云函数] [getGoods] 调用成功', res);
+        if (res.result && res.result.success) {
+          const items = res.result.data;
+          this.setData({
+            exchangeItems: items
+          });
+        } else {
+          wx.showToast({
+            title: '获取商品数据失败',
+            icon: 'none'
+          });
+        }
       },
       fail: err => {
-        console.error('[云函数] [getExchangeItems] 调用失败', err);
+        console.error('[云函数] [getGoods] 调用失败', err);
         wx.showToast({
           title: '获取商品数据失败',
           icon: 'none'
@@ -179,37 +77,11 @@ Page({
     }
   },
 
-  // 切换标签
-  handleTabChange: function(e) {
-    const index = e.detail.value;
-    this.setData({
-      currentTab: index
-    });
-    this.filterItems(index);
-  },
-
-  // 根据标签筛选商品
-  filterItems: function(tabIndex) {
-    let filteredItems = [];
-    
-    if (tabIndex === 0) {
-      // 全部商品
-      filteredItems = this.data.allItems;
-    } else {
-      // 根据类型筛选
-      const tabType = this.data.tabs[tabIndex];
-      filteredItems = this.data.allItems.filter(item => item.type === tabType);
-    }
-    
-    this.setData({
-      exchangeItems: filteredItems
-    });
-  },
-
   // 点击商品
   handleItemClick: function(e) {
     const { id } = e.currentTarget.dataset;
-    const item = this.data.allItems.find(item => item.id === id);
+    console.log('handleItemClick', id);
+    const item = this.data.exchangeItems.find(item => item._id === id);
     
     if (!item) return;
     
@@ -228,7 +100,7 @@ Page({
     }
 
     const { id } = e.currentTarget.dataset;
-    const item = this.data.allItems.find(item => item.id === id);
+    const item = this.data.exchangeItems.find(item => item._id === id);
     
     if (!item) return;
     
@@ -268,49 +140,74 @@ Page({
       title: '兑换中...',
     });
     
-    // 模拟兑换请求
-    setTimeout(() => {
-      wx.hideLoading();
-      
-      // 更新用户碎片
-      const userInfo = this.data.userInfo;
-      userInfo.points -= item.points;
-      
-      // 更新本地存储
-      wx.setStorageSync('userInfo', userInfo);
-      
-      // 更新界面
-      this.setData({
-        userInfo: userInfo
-      });
-      
-      // 根据商品类型处理后续流程
-      if (item.type === '实物奖品') {
-        wx.showModal({
-          title: '兑换成功',
-          content: '请前往"我的-收货地址"完善收货信息',
-          showCancel: false,
-          success: () => {
-            wx.navigateTo({
-              url: '/pages/exchange/history'
+    wx.cloud.callFunction({
+      name: 'exchangeGoods',
+      data: {
+        goodId: item._id
+      },
+      success: res => {
+        wx.hideLoading();
+        
+        if (res.result && res.result.success) {
+          // 更新用户碎片
+          if (res.result.data && res.result.data.userInfo) {
+            const userInfo = res.result.data.userInfo;
+            
+            // 更新本地存储和全局数据
+            wx.setStorageSync('userInfo', userInfo);
+            app.globalData.userInfo = userInfo;
+            
+            // 更新界面
+            this.setData({
+              userInfo: userInfo
+            });
+          } else {
+            // 如果没有返回更新后的用户信息，手动更新
+            const userInfo = this.data.userInfo;
+            userInfo.points -= item.points;
+            
+            // 更新本地存储
+            wx.setStorageSync('userInfo', userInfo);
+            app.globalData.userInfo = userInfo;
+            
+            // 更新界面
+            this.setData({
+              userInfo: userInfo
             });
           }
-        });
-      } else {
+          
+          // 刷新商品列表
+          this.fetchGoodsData();
+          
+          // 兑换成功提示
+          wx.showToast({
+            title: '兑换成功',
+            icon: 'success',
+            duration: 2000,
+            success: () => {
+              setTimeout(() => {
+                wx.navigateTo({
+                  url: '/pages/exchange/history'
+                });
+              }, 2000);
+            }
+          });
+        } else {
+          wx.showToast({
+            title: res.result.message || '兑换失败，请重试',
+            icon: 'none'
+          });
+        }
+      },
+      fail: err => {
+        wx.hideLoading();
+        console.error('兑换失败', err);
         wx.showToast({
-          title: '兑换成功',
-          icon: 'success',
-          duration: 2000,
-          success: () => {
-            setTimeout(() => {
-              wx.navigateTo({
-                url: '/pages/exchange/history'
-              });
-            }, 2000);
-          }
+          title: '兑换失败，请重试',
+          icon: 'none'
         });
       }
-    }, 1000);
+    });
   },
 
   // 查看兑换记录

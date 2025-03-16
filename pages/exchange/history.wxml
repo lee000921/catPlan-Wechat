@@ -13,69 +13,19 @@
 
     <!-- 已登录状态 -->
     <block wx:else>
-      <!-- 分类标签页 -->
-      <t-tabs value="{{currentTab}}" bind:change="handleTabChange" t-class="custom-tabs">
-        <t-tab-panel wx:for="{{tabs}}" wx:key="index" label="{{item}}" value="{{index}}" />
-      </t-tabs>
-
       <!-- 兑换记录列表 -->
       <view class="records-list" wx:if="{{exchangeRecords.length > 0}}">
-        <view class="record-item" wx:for="{{exchangeRecords}}" wx:key="id">
+        <view class="record-item" wx:for="{{exchangeRecords}}" wx:key="_id">
           <view class="record-header">
-            <view class="record-time">{{item.exchangeTime}}</view>
-            <view class="record-status {{item.status === '待发货' ? 'pending' : (item.status === '已发货' ? 'shipped' : 'completed')}}">{{item.status}}</view>
+            <view class="record-time">{{item.exchangeTime ? wxs.formatDate(item.exchangeTime) : ''}}</view>
           </view>
 
           <view class="record-content">
-            <image class="item-image" src="{{item.itemImage || '/assets/images/exchange/default.png'}}" mode="aspectFill" />
+            <image class="item-image" src="{{item.goodImage || '/assets/images/exchange/default.png'}}" mode="aspectFill" />
             <view class="item-info">
-              <view class="item-title">{{item.itemTitle}}</view>
+              <view class="item-title">{{item.goodTitle}}</view>
               <view class="item-points">{{item.points}}碎片</view>
             </view>
-          </view>
-
-          <!-- 虚拟商品信息 -->
-          <view class="virtual-info" wx:if="{{item.virtualCode}}">
-            <view class="info-row">
-              <view class="info-label">兑换码</view>
-              <view class="info-value">{{item.virtualCode}}</view>
-              <view class="copy-btn" bindtap="copyVirtualCode" data-id="{{item.id}}">复制</view>
-            </view>
-          </view>
-
-          <!-- 物流信息 -->
-          <view class="delivery-info" wx:if="{{item.deliveryInfo}}">
-            <view class="info-row">
-              <view class="info-label">收货信息</view>
-              <view class="info-value">{{item.deliveryInfo.name}} {{item.deliveryInfo.phone}}</view>
-            </view>
-            <view class="info-row">
-              <view class="info-label">收货地址</view>
-              <view class="info-value address">{{item.deliveryInfo.address}}</view>
-            </view>
-            
-            <!-- 已发货状态显示物流信息 -->
-            <block wx:if="{{item.trackingInfo}}">
-              <view class="info-row">
-                <view class="info-label">物流公司</view>
-                <view class="info-value">{{item.trackingInfo.company}}</view>
-              </view>
-              <view class="info-row">
-                <view class="info-label">运单号</view>
-                <view class="info-value">{{item.trackingInfo.trackingNumber}}</view>
-                <view class="copy-btn" bindtap="copyTrackingNumber" data-id="{{item.id}}">复制</view>
-              </view>
-              <view class="info-row">
-                <view class="info-label">发货时间</view>
-                <view class="info-value">{{item.trackingInfo.shippedTime}}</view>
-              </view>
-            </block>
-          </view>
-
-          <!-- 操作按钮 -->
-          <view class="record-actions">
-            <view class="action-btn view-btn" wx:if="{{item.trackingInfo}}" bindtap="viewTracking" data-id="{{item.id}}">查看物流</view>
-            <view class="action-btn confirm-btn" wx:if="{{item.status === '已发货'}}" bindtap="confirmReceived" data-id="{{item.id}}">确认收货</view>
           </view>
         </view>
       </view>
@@ -88,3 +38,28 @@
     </block>
   </block>
 </view>
+
+<!-- WXS 模块用于格式化日期 -->
+<wxs module="wxs">
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    
+    // 将日期字符串转换为可读格式
+    var date = getDate(dateStr);
+    var year = date.getFullYear();
+    var month = padZero(date.getMonth() + 1);
+    var day = padZero(date.getDate());
+    var hour = padZero(date.getHours());
+    var minute = padZero(date.getMinutes());
+    
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+  }
+  
+  function padZero(num) {
+    return num < 10 ? '0' + num : '' + num;
+  }
+  
+  module.exports = {
+    formatDate: formatDate
+  };
+</wxs>

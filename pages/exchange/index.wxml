@@ -21,17 +21,12 @@
       </view>
     </view>
 
-    <!-- 分类标签页 -->
-    <t-tabs value="{{currentTab}}" bind:change="handleTabChange" t-class="custom-tabs">
-      <t-tab-panel wx:for="{{tabs}}" wx:key="index" label="{{item}}" value="{{index}}" />
-    </t-tabs>
-
     <!-- 兑换商品列表 -->
     <view class="exchange-list">
       <view class="exchange-item" 
             wx:for="{{exchangeItems}}" 
-            wx:key="id" 
-            data-id="{{item.id}}" 
+            wx:key="_id" 
+            data-id="{{item._id}}" 
             bindtap="handleItemClick">
         <image class="item-image" src="{{item.image || '/assets/images/exchange/default.png'}}" mode="aspectFill" />
         <view class="item-stock {{item.stock <= 0 ? 'out-of-stock' : ''}}">
@@ -41,12 +36,12 @@
           <view class="item-title">{{item.title}}</view>
           <view class="item-price-row">
             <view class="item-points">{{item.points}}碎片</view>
-            <view class="item-original-price">{{item.originalPrice}}</view>
+            <view class="item-original-price" wx:if="{{item.originPrice}}">{{item.originPrice}}</view>
           </view>
-          <view class="item-sold">已兑换{{item.sold}}件</view>
+          <view class="item-sold">已兑换{{item.sold || 0}}件</view>
           <view class="exchange-btn {{(!isLogin || userInfo.points < item.points || item.stock <= 0) ? 'disabled' : ''}}" 
                 catchtap="handleExchange" 
-                data-id="{{item.id}}">
+                data-id="{{item._id}}">
             {{item.stock <= 0 ? '已抢光' : ((!isLogin || userInfo.points < item.points) ? '碎片不足' : '立即兑换')}}
           </view>
         </view>
@@ -64,10 +59,9 @@
       <view class="rules-title">兑换说明</view>
       <view class="rules-content">
         <view class="rule-item">1. 碎片可通过签到、完成任务等方式获取</view>
-        <view class="rule-item">2. 实物奖品兑换后需填写收货地址</view>
-        <view class="rule-item">3. 虚拟奖品兑换后自动发放至账户</view>
-        <view class="rule-item">4. 兑换记录可在"兑换记录"中查看</view>
-        <view class="rule-item">5. 如有疑问，请联系客服</view>
+        <view class="rule-item">2. 兑换后需填写收货地址</view>
+        <view class="rule-item">3. 兑换记录可在"兑换记录"中查看</view>
+        <view class="rule-item">4. 如有疑问，请联系客服</view>
       </view>
     </view>
   </block>
