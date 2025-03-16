@@ -14,21 +14,21 @@ Page({
 
   onLoad: function() {
     this.checkLoginStatus();
-    wx.cloud.callFunction({
-      name: 'initTaskCollection',
-      data: {},
-      success: res => {
-        console.log('[云函数] [initTaskCollection] 调用成功', res);
-      },
-      fail: err => {
-        console.error('[云函数] [getTasks] 调用失败', err);
-        this.setData({ loading: false });
-        wx.showToast({
-          title: '获取任务数据失败',
-          icon: 'none'
-        });
-      }
-    });
+    // wx.cloud.callFunction({
+    //   name: 'initTaskCollection',
+    //   data: {},
+    //   success: res => {
+    //     console.log('[云函数] [initTaskCollection] 调用成功', res);
+    //   },
+    //   fail: err => {
+    //     console.error('[云函数] [getTasks] 调用失败', err);
+    //     this.setData({ loading: false });
+    //     wx.showToast({
+    //       title: '获取任务数据失败',
+    //       icon: 'none'
+    //     });
+    //   }
+    // });
   },
 
   onShow: function() {
