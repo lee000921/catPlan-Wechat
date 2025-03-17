@@ -10,6 +10,8 @@
 {"_id":"14","title":"勤奋小猫咪——学习时长：9小时","desc":"每天学习9小时，可以选择自己喜欢的学习方式","points":10,"category":"daily","progress":0,"maxProgress":1,"completed":false}
 {"_id":"20","title":"勤奋小猫咪——English：背单词","desc":"完成规划的单词背诵任务","points":10,"category":"daily","progress":0,"maxProgress":1,"completed":false}
 {"_id":"21","title":"勤奋小猫咪——English：每日一句","desc":"完成规划的每日一句学习任务","points":10,"category":"daily","progress":0,"maxProgress":1,"completed":false}
+{"_id":"22","title":"勤奋小猫咪——English：每日阅读","desc":"完成规划的每日阅读学习任务","points":10,"category":"daily","progress":0,"maxProgress":1,"completed":false}
+{"_id":"23","title":"勤奋小猫咪——English：每日听力","desc":"完成规划的每日听力学习任务","points":10,"category":"daily","progress":0,"maxProgress":1,"completed":false}
 {"_id":"100","title":"坚持小猫咪——累计看完5节网课","desc":"累计看完5节网课，可以获得额外的奖励。","points":5,"category":"growth","progress":0,"maxProgress":1,"completed":false}
 {"_id":"101","title":"坚持小猫咪——累计看完10节网课","desc":"累计看完10节网课，可以获得额外的奖励。","points":10,"category":"growth","progress":0,"maxProgress":1,"completed":false}
 {"_id":"102","title":"坚持小猫咪——累计看完20节网课","desc":"累计看完20节网课，可以获得额外的奖励。","points":20,"category":"growth","progress":0,"maxProgress":1,"completed":false}
@@ -34,3 +36,4 @@
 {"_id":"208","title":"坚持小猫咪——完成政治复习","desc":"完成政治复习，可以获得额外的奖励。","points":2500,"category":"growth","progress":0,"maxProgress":1,"completed":false}
 {"_id":"500","title":"坚持小猫咪——完成考研考试","desc":"坚持完成考研考试，可以获得额外的奖励。","points":10000,"category":"growth","progress":0,"maxProgress":1,"completed":false}
 {"_id":"501","title":"坚持小猫咪——成功上岸","desc":"成功上岸，可以获得额外的奖励。","points":10000,"category":"growth","progress":0,"maxProgress":1,"completed":false}
+{"_id":"502","title":"坚持小猫咪——通过六级考试","desc":"通过六级考试，可以获得额外的奖励。","points":500,"category":"growth","progress":0,"maxProgress":1,"completed":false}
