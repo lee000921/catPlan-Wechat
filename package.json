@@ -1,0 +1,21 @@
+{
+  "name": "catplan-wechat",
+  "version": "1.0.0",
+  "description": "catPlan 微信小程序",
+  "scripts": {
+    "deploy": "node deploy.js",
+    "deploy:preview": "node deploy.js --preview"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "typescript"
+  ],
+  "author": "lee000921",
+  "license": "MIT",
+  "devDependencies": {
+    "miniprogram-api-typings": "^2.8.3-1",
+    "miniprogram-ci": "^2.1.26",
+    "typescript": "^5.9.3"
+  }
+}

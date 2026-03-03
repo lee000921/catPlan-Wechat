@@ -1,0 +1,5 @@
+/* Global styles for the example mini app */
+page { background: #f6f8fa; }
+
+/* utility */
+.container { padding: 24rpx; display: flex; flex-direction: column; align-items: center; }

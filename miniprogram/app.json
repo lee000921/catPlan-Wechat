@@ -1,0 +1,32 @@
+{
+    "pages": [
+      "pages/login/login",
+      "pages/tasks/tasks",
+      "pages/task-submit/task-submit",
+      "pages/task-detail/task-detail",
+      "pages/signin/signin"
+    ],
+    "window": {
+      "backgroundTextStyle": "light",
+      "navigationBarBackgroundColor": "#ffffff",
+      "navigationBarTitleText": "CatPlan",
+      "navigationBarTextStyle": "black"
+    },
+    "tabBar": {
+      "color": "#999",
+      "selectedColor": "#1989fa",
+      "backgroundColor": "#fff",
+      "borderStyle": "black",
+      "list": [
+        {
+          "pagePath": "pages/tasks/tasks",
+          "text": "任务"
+        },
+        {
+          "pagePath": "pages/signin/signin",
+          "text": "签到"
+        }
+      ]
+    }
+  }
+  
