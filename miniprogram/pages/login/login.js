@@ -99,7 +99,7 @@ Page({
                       wx.setStorageSync('catplan_user_type', userType);
                       
                       // 显示角色信息
-                      const roleLabel = this.data.roleOptions.find(r => r.value === userType)?.label || '申请者';
+    const found = this.data.roleOptions.find(r => r.value === userType); const roleLabel = found ? found.label : '申请者';
                       
                       // 自动跳转到任务列表页（主页面）
                       wx.reLaunch({

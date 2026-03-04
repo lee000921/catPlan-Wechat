@@ -1,0 +1,313 @@
+/* pages/shop/exchange/exchange.wxss */
+.container {
+  padding-bottom: 160rpx;
+}
+
+/* 商品信息卡片 */
+.product-card {
+  margin-bottom: 20rpx;
+}
+
+.product-header {
+  display: flex;
+  align-items: center;
+}
+
+.product-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+  background-color: #f5f5f5;
+}
+
+.product-info {
+  flex: 1;
+  margin-left: 30rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.product-points {
+  display: flex;
+  align-items: baseline;
+}
+
+.points-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ff6b35;
+  margin-right: 8rpx;
+}
+
+.points-unit {
+  font-size: 26rpx;
+  color: #ff6b35;
+}
+
+/* 数量选择 */
+.quantity-section {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn:active {
+  background-color: #e0e0e0;
+}
+
+.btn-text {
+  font-size: 40rpx;
+  color: #333;
+  font-weight: 300;
+}
+
+.quantity-input {
+  width: 120rpx;
+  height: 80rpx;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin: 0 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+}
+
+.quantity-tips {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding: 0 20rpx;
+}
+
+.quantity-tips text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 积分明细 */
+.points-detail {
+  margin-bottom: 20rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row.total {
+  margin-top: 8rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #e0e0e0;
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.total-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff6b35;
+}
+
+/* 用户积分 */
+.user-points {
+  margin-bottom: 20rpx;
+}
+
+.points-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.points-row.after {
+  border-top: 1rpx dashed #e0e0e0;
+  padding-top: 16rpx;
+}
+
+.points-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.points-value.current {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff6b35;
+}
+
+.points-value.after {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #52c41a;
+}
+
+.points-value.after.warning {
+  color: #ff4d4f;
+}
+
+/* 兑换说明 */
+.notice {
+  margin-bottom: 20rpx;
+  background-color: #fff7e6;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+}
+
+.notice-item:last-child {
+  margin-bottom: 0;
+}
+
+.notice-icon {
+  color: #4A90D9;
+  margin-right: 12rpx;
+  font-size: 28rpx;
+}
+
+.notice-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 底部确认栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: white;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.total-info {
+  display: flex;
+  align-items: baseline;
+}
+
+.total-label {
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 8rpx;
+}
+
+.total-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ff6b35;
+}
+
+.total-unit {
+  font-size: 26rpx;
+  color: #ff6b35;
+  margin-left: 4rpx;
+}
+
+.confirm-btn {
+  background-color: #4A90D9;
+  color: white;
+  padding: 24rpx 60rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.confirm-btn:active {
+  background-color: #3a7bc8;
+}
+
+.confirm-btn.disabled {
+  background-color: #cccccc;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 权限不足 */
+.permission-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: white;
+}
+
+.denied-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.denied-text {
+  font-size: 32rpx;
+  color: #999;
+}

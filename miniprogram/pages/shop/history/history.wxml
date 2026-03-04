@@ -1,0 +1,77 @@
+<!--pages/shop/history/history.wxml-->
+<view class="container">
+  <!-- 顶部统计 -->
+  <view class="header card">
+    <view class="header-title">兑换记录</view>
+    <view class="header-stats">
+      <text class="stats-label">共兑换</text>
+      <text class="stats-value">{{total}}</text>
+      <text class="stats-unit">次</text>
+    </view>
+  </view>
+
+  <!-- 兑换列表 -->
+  <view class="exchange-list">
+    <view wx:if="{{loading && exchangeList.length === 0}}" class="loading-container">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view wx:elif="{{exchangeList.length === 0}}" class="empty-container" bindtap="goBack">
+      <view class="empty-icon">📜</view>
+      <text class="empty-text">暂无兑换记录</text>
+      <text class="empty-tip">去商城看看有什么可兑换的吧</text>
+      <view class="go-shop-btn">前往商城</view>
+    </view>
+
+    <view wx:else class="list-container">
+      <view 
+        class="exchange-item card" 
+        wx:for="{{exchangeList}}" 
+        wx:key="id"
+        bindtap="viewDetail"
+        data-id="{{item.productId}}"
+      >
+        <view class="item-header">
+          <view class="item-status">
+            <text class="status-tag {{item.status === 'success' ? 'success' : item.status === 'pending' ? 'pending' : 'failed'}}">
+              {{item.statusText || (item.status === 'success' ? '兑换成功' : item.status === 'pending' ? '处理中' : '兑换失败')}}
+            </text>
+            <text class="item-time">{{item.createTime}}</text>
+          </view>
+          <text class="item-id">订单号：{{item.orderNo}}</text>
+        </view>
+
+        <view class="item-content">
+          <image class="item-image" src="{{item.productImage || '/images/default-product.png'}}" mode="aspectFill"></image>
+          <view class="item-info">
+            <text class="item-name">{{item.productName}}</text>
+            <view class="item-meta">
+              <text class="item-points">-{{item.points}} 积分</text>
+              <text class="item-count">x {{item.count}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="item-footer" wx:if="{{item.status === 'success'}}">
+          <text class="footer-tip">✓ 兑换成功，请联系管理员领取</text>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{loading && exchangeList.length > 0}}" class="loading-more">
+        <text>加载中...</text>
+      </view>
+      <view wx:if="{{!hasMore && exchangeList.length > 0}}" class="no-more">
+        <text>没有更多记录了</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部联系客服 -->
+  <view class="contact-section" wx:if="{{exchangeList.length > 0}}">
+    <view class="contact-btn" bindtap="contactSeller">
+      <text class="contact-icon">📞</text>
+      <text>联系客服</text>
+    </view>
+  </view>
+</view>

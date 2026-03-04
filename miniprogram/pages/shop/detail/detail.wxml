@@ -1,0 +1,110 @@
+<!--pages/shop/detail/detail.wxml-->
+<view class="container" wx:if="{{!loading && product}}">
+  <!-- 商品图片 -->
+  <view class="product-image-container">
+    <image 
+      class="product-image" 
+      src="{{product.imageUrl || '/images/default-product.png'}}" 
+      mode="aspectFill"
+    ></image>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class="product-info card">
+    <view class="product-header">
+      <text class="product-name">{{product.name}}</text>
+      <view class="product-points">
+        <text class="points-value">{{product.points}}</text>
+        <text class="points-label">积分</text>
+      </view>
+    </view>
+
+    <view class="product-meta">
+      <view class="meta-item" wx:if="{{product.stock !== null}}">
+        <text class="meta-label">库存</text>
+        <text class="meta-value">{{product.stock}}</text>
+      </view>
+      <view class="meta-item" wx:if="{{product.exchangeCount !== null}}">
+        <text class="meta-label">已兑换</text>
+        <text class="meta-value">{{product.exchangeCount}}</text>
+      </view>
+      <view class="meta-item" wx:if="{{product.limitPerUser}}">
+        <text class="meta-label">限兑</text>
+        <text class="meta-value">{{product.limitPerUser}}件/人</text>
+      </view>
+    </view>
+
+    <view class="product-status-tag" wx:if="{{product.stock > 0}}">
+      <text class="status-icon">✓</text>
+      <text>可兑换</text>
+    </view>
+    <view class="product-status-tag out-of-stock" wx:else>
+      <text>已兑完</text>
+    </view>
+  </view>
+
+  <!-- 商品描述 -->
+  <view class="product-description card" wx:if="{{product.description}}">
+    <view class="section-title">商品详情</view>
+    <text class="desc-text">{{product.description}}</text>
+  </view>
+
+  <!-- 兑换说明 -->
+  <view class="exchange-rules card">
+    <view class="section-title">兑换说明</view>
+    <view class="rule-item">
+      <text class="rule-icon">📋</text>
+      <text class="rule-text">仅 A 类用户（申请者）可兑换</text>
+    </view>
+    <view class="rule-item">
+      <text class="rule-icon">⏰</text>
+      <text class="rule-text">兑换后积分将立即扣除</text>
+    </view>
+    <view class="rule-item" wx:if="{{product.limitPerUser}}">
+      <text class="rule-icon">🔢</text>
+      <text class="rule-text">每人限兑{{product.limitPerUser}}件</text>
+    </view>
+    <view class="rule-item">
+      <text class="rule-icon">📦</text>
+      <text class="rule-text">兑换成功后请联系管理员领取</text>
+    </view>
+  </view>
+
+  <!-- 用户积分信息 -->
+  <view class="user-points card">
+    <view class="points-row">
+      <text class="points-label">我的积分</text>
+      <text class="points-value">{{points}}</text>
+    </view>
+    <view class="points-row after-exchange" wx:if="{{isTypeA && points >= product.points}}">
+      <text class="after-label">兑换后剩余</text>
+      <text class="after-value">{{points - product.points}}</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="history-btn" bindtap="goToHistory">
+      <text class="btn-icon">📜</text>
+      <text>兑换记录</text>
+    </view>
+    <view 
+      class="exchange-btn" 
+      wx:if="{{isTypeA && product.stock > 0}}"
+      bindtap="exchangeNow"
+    >
+      <text>立即兑换</text>
+    </view>
+    <view class="exchange-btn-disabled" wx:elif="{{!isTypeA}}">
+      <text>A 类用户专享</text>
+    </view>
+    <view class="exchange-btn-disabled" wx:elif="{{product.stock <= 0}}">
+      <text>已兑完</text>
+    </view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>

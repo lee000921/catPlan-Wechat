@@ -1,0 +1,79 @@
+<!--pages/shop/list/list.wxml-->
+<view class="container">
+  <!-- 顶部用户信息栏 -->
+  <view class="user-bar card">
+    <view class="user-info">
+      <image class="avatar" wx:if="{{userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="avatar-placeholder" wx:else>{{userInfo.nickname ? userInfo.nickname[0] : 'U'}}</view>
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickname || '用户'}}</text>
+        <text class="user-type" wx:if="{{isTypeA}}">A 类用户</text>
+      </view>
+    </view>
+    <view class="points-info">
+      <text class="points-label">我的积分</text>
+      <text class="points-value">{{points || 0}}</text>
+    </view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="product-list">
+    <view class="section-title">可兑换物品</view>
+    
+    <view wx:if="{{loading && productList.length === 0}}" class="loading-container">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view wx:elif="{{productList.length === 0}}" class="empty-container">
+      <text class="empty-text">暂无可兑换物品</text>
+    </view>
+
+    <view wx:else class="product-grid">
+      <view 
+        class="product-item card" 
+        wx:for="{{productList}}" 
+        wx:key="id"
+        bindtap="goToDetail"
+        data-id="{{item.id}}"
+      >
+        <image class="product-image" src="{{item.imageUrl || '/images/default-product.png'}}" mode="aspectFill"></image>
+        <view class="product-info">
+          <text class="product-name">{{item.name}}</text>
+          <text class="product-desc" wx:if="{{item.description}}">{{item.description}}</text>
+          <view class="product-meta">
+            <text class="product-points">{{item.points}} 积分</text>
+            <text class="product-stock" wx:if="{{item.stock !== null && item.stock !== undefined}}">库存：{{item.stock}}</text>
+          </view>
+          <view class="product-status">
+            <text class="status-tag" wx:if="{{item.stock > 0}}">可兑换</text>
+            <text class="status-tag out-of-stock" wx:else>已兑完</text>
+          </view>
+        </view>
+        <view 
+          class="exchange-btn" 
+          wx:if="{{isTypeA && item.stock > 0}}"
+          catchtap="exchangeNow"
+          data-id="{{item.id}}"
+        >
+          立即兑换
+        </view>
+        <view class="exchange-btn-disabled" wx:elif="{{!isTypeA}}">
+          A 类专享
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多提示 -->
+    <view wx:if="{{loading && productList.length > 0}}" class="loading-more">
+      <text>加载中...</text>
+    </view>
+    <view wx:if="{{!hasMore && productList.length > 0}}" class="no-more">
+      <text>没有更多了</text>
+    </view>
+  </view>
+
+  <!-- 底部导航提示 -->
+  <view class="bottom-tip">
+    <text>仅 A 类用户（申请者）可兑换</text>
+  </view>
+</view>

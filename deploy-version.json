@@ -1,0 +1,14 @@
+[
+  {
+    "version": "20260304.230404",
+    "timestamp": "2026-03-04T15:04:04.461Z",
+    "gitInfo": {
+      "commitHash": "e041593",
+      "commitMsg": "docs: 添加迁移报告"
+    },
+    "uploadResult": {
+      "success": false,
+      "message": "Class constructor CIProject cannot be invoked without 'new'"
+    }
+  }
+]
