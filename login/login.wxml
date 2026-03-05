@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="card">
+    <image class="logo" src="/assets/logo.png" mode="aspectFit" wx:if="{{false}}" />
+    <view class="title">CatPlan 任务管理</view>
+    
+    <!-- 角色选择（仅在未登录时显示） -->
+    <view class="role-section" wx:if="{{!logged}}">
+      <view class="section-title">选择您的角色</view>
+      <radio-group class="role-group" bindchange="onRoleChange">
+        <view class="role-item" wx:for="{{roleOptions}}" wx:key="value">
+          <radio value="{{item.value}}" checked="{{item.value === selectedRole}}" />
+          <view class="role-info">
+            <view class="role-label">{{item.label}}</view>
+            <view class="role-desc">{{item.desc}}</view>
+          </view>
+        </view>
+      </radio-group>
+    </view>
+
+    <view class="profile" wx:if="{{logged}}">
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+      <view class="nick">{{userInfo.nickName}}</view>
+    </view>
+
+    <view class="actions">
+      <button class="login-btn" bindtap="onLoginTap" wx:if="{{!logged}}">微信一键登录</button>
+      <button class="logout-btn" bindtap="onLogout" wx:if="{{logged}}">退出登录</button>
+    </view>
+
+    <view class="status" wx:if="{{message}}">{{message}}</view>
+  </view>
+</view>

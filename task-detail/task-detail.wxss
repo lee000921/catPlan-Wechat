@@ -1,0 +1,519 @@
+/* 页面容器 */
+.container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    padding-bottom: 200rpx;
+  }
+  
+  /* 顶部装饰 */
+  .top-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400rpx;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 0 0 50% 50%;
+  }
+  
+  /* 加载中 */
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200rpx;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* 任务详情卡片 */
+  .task-detail {
+    margin: 30rpx;
+    background: #fff;
+    border-radius: 32rpx;
+    padding: 40rpx;
+    box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+  }
+  
+  .task-detail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8rpx;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+  }
+  
+  /* 任务头部 */
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30rpx;
+    padding-bottom: 30rpx;
+    border-bottom: 1rpx solid #f0f0f0;
+  }
+  
+  .task-title {
+    flex: 1;
+    font-size: 40rpx;
+    font-weight: bold;
+    color: #333;
+    margin-right: 20rpx;
+    line-height: 1.4;
+  }
+  
+  .task-status {
+    font-size: 24rpx;
+    padding: 10rpx 24rpx;
+    border-radius: 24rpx;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  
+  .status-pending {
+    background: linear-gradient(135deg, #fff7e6, #ffe8cc);
+    color: #ff9a00;
+    border: 2rpx solid rgba(255, 154, 0, 0.2);
+  }
+  
+  .status-approved {
+    background: linear-gradient(135deg, #e8f4ff, #d1e9ff);
+    color: #1890ff;
+    border: 2rpx solid rgba(24, 144, 255, 0.2);
+  }
+  
+  .status-rejected {
+    background: linear-gradient(135deg, #fff2f0, #ffd1d1);
+    color: #ff4d4f;
+    border: 2rpx solid rgba(255, 77, 79, 0.2);
+  }
+  
+  .status-completed {
+    background: linear-gradient(135deg, #f6ffed, #d9f7be);
+    color: #52c41a;
+    border: 2rpx solid rgba(82, 196, 26, 0.2);
+  }
+  
+  /* 区块 */
+  .task-section, .approvals-section, .approval-form, .complete-section {
+    margin: 0 30rpx 30rpx;
+    background: #fff;
+    border-radius: 32rpx;
+    padding: 40rpx;
+    box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+  }
+  
+  .section-title {
+    display: block;
+    font-size: 36rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30rpx;
+    padding-bottom: 20rpx;
+    border-bottom: 1rpx solid #f0f0f0;
+    position: relative;
+  }
+  
+  .section-title::before {
+    content: '';
+    position: absolute;
+    bottom: -1rpx;
+    left: 0;
+    width: 80rpx;
+    height: 4rpx;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2rpx;
+  }
+  
+  /* 任务描述 */
+  .task-desc {
+    font-size: 30rpx;
+    color: #666;
+    line-height: 1.8;
+    padding: 20rpx;
+    background: #f9f9f9;
+    border-radius: 16rpx;
+  }
+  
+  /* 任务信息 */
+  .task-info {
+    background: #f8f9ff;
+    padding: 30rpx;
+    border-radius: 20rpx;
+    margin-top: 30rpx;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+  
+  .info-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .info-label {
+    font-size: 28rpx;
+    color: #888;
+    margin-right: 20rpx;
+    min-width: 160rpx;
+    font-weight: 500;
+  }
+  
+  .info-value {
+    font-size: 30rpx;
+    color: #333;
+    flex: 1;
+    font-weight: 500;
+  }
+  
+  .info-value.points {
+    background: linear-gradient(90deg, #ff9a00, #ff6b00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 36rpx;
+  }
+  
+  /* 审批记录 */
+  .approvals-section .section-title {
+    margin-bottom: 30rpx;
+  }
+  
+  .approval-item {
+    padding: 30rpx 0;
+    border-bottom: 2rpx solid #f0f0f0;
+  }
+  
+  .approval-item:last-child {
+    border-bottom: none;
+  }
+  
+  .approval-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16rpx;
+  }
+  
+  .approver-name {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .approver-name::before {
+    content: '';
+    display: inline-block;
+    width: 64rpx;
+    height: 64rpx;
+    border-radius: 32rpx;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin-right: 16rpx;
+  }
+  
+  .approval-status {
+    font-size: 24rpx;
+    padding: 8rpx 20rpx;
+    border-radius: 20rpx;
+    font-weight: 600;
+  }
+  
+  .approval-comment {
+    display: block;
+    font-size: 28rpx;
+    color: #666;
+    margin: 20rpx 0;
+    line-height: 1.6;
+    padding: 20rpx;
+    background: #f9f9f9;
+    border-radius: 16rpx;
+  }
+  
+  .approval-date {
+    font-size: 24rpx;
+    color: #999;
+  }
+  
+  /* 审批表单 */
+  .approval-form .section-title {
+    margin-bottom: 30rpx;
+  }
+  
+  /* 表单组 */
+  .approval-form .form-group {
+    margin-bottom: 48rpx;
+  }
+  
+  .approval-form .form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* 表单标签 */
+  .approval-form .form-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+  }
+  
+  .approval-form .label-text {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #333;
+    position: relative;
+  }
+  
+  .approval-form .label-icon {
+    font-size: 36rpx;
+    opacity: 0.8;
+  }
+  
+  /* 审批状态选择 */
+  .approval-status {
+    background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+    border-radius: 20rpx;
+    padding: 30rpx;
+    border: 2rpx solid #e8f0ff;
+  }
+  
+  .radio-group {
+    display: flex;
+    gap: 20rpx;
+  }
+  
+  .radio-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24rpx;
+    border-radius: 16rpx;
+    background: #fff;
+    border: 2rpx solid #e8e8e8;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  .radio-label.checked {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: #667eea;
+    color: #fff;
+    transform: scale(1.02);
+    box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+  }
+  
+  .radio-label.checked::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 0.6s ease-out;
+  }
+  
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+  
+  .radio-label radio {
+    margin-right: 12rpx;
+    transform: scale(1.2);
+  }
+  
+  .radio-label text {
+    font-size: 32rpx;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .radio-label.checked text {
+    color: #fff;
+  }
+  
+  /* 审批意见输入框 */
+  .approval-form .textarea-wrapper {
+    position: relative;
+  }
+  
+  .approval-comment {
+    width: 100%;
+    min-height: 200rpx;
+    max-height: 400rpx;
+    padding: 28rpx 24rpx;
+    border: 2rpx solid #e8e8e8;
+    border-radius: 20rpx;
+    font-size: 30rpx;
+    box-sizing: border-box;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    color: #333;
+    line-height: 1.6;
+    resize: none;
+  }
+  
+  .approval-comment:focus {
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 6rpx rgba(102, 126, 234, 0.1);
+  }
+  
+  /* 字数计数器 */
+  .textarea-counter {
+    position: absolute;
+    right: 20rpx;
+    bottom: 20rpx;
+    font-size: 24rpx;
+    color: #999;
+    background: #fff;
+    padding: 4rpx 12rpx;
+    border-radius: 12rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+  }
+  
+  /* 审批按钮组 */
+  .approval-actions {
+    display: flex;
+    gap: 20rpx;
+    margin-top: 30rpx;
+  }
+  
+  .approval-btn, .cancel-btn {
+    flex: 1;
+    height: 96rpx;
+    border-radius: 48rpx;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    font-size: 32rpx;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .approval-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+  }
+  
+  .approval-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .approval-btn:active::before {
+    left: 100%;
+  }
+  
+  .approval-btn:active {
+    transform: scale(0.98);
+  }
+  
+  .cancel-btn {
+    background: #f8f9fa;
+    color: #666;
+    border: 2rpx solid #e8e8e8;
+  }
+  
+  .cancel-btn:active {
+    background: #e9ecef;
+    transform: scale(0.98);
+  }
+  
+  .approval-btn[disabled], .cancel-btn[disabled] {
+    opacity: 0.7;
+    background: #e0e0e0 !important;
+    box-shadow: none;
+    color: #999;
+  }
+  
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .btn-icon {
+    font-size: 36rpx;
+    margin-right: 12rpx;
+  }
+  
+  .btn-text {
+    font-size: 32rpx;
+    font-weight: bold;
+  }
+  
+  .btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 28rpx;
+  }
+  
+  /* 完成按钮 */
+  .complete-btn {
+    width: 100%;
+    height: 96rpx;
+    line-height: 96rpx;
+    font-size: 32rpx;
+    font-weight: bold;
+    border-radius: 48rpx;
+    background: linear-gradient(90deg, #52c41a, #73d13d) !important;
+    box-shadow: 0 8rpx 24rpx rgba(82, 196, 26, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .complete-btn:active {
+    transform: translateY(2rpx);
+    box-shadow: 0 4rpx 12rpx rgba(82, 196, 26, 0.3);
+  }
+  
+  .complete-btn[disabled] {
+    opacity: 0.7;
+    background: #ccc !important;
+    box-shadow: none;
+  }
+  
+  /* 无数据 */
+  .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400rpx;
+  }
+  
+  .empty-text {
+    font-size: 32rpx;
+    color: #999;
+    font-weight: 500;
+  }
+  

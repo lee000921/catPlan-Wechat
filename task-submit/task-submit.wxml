@@ -1,0 +1,110 @@
+<view class="container">
+  <!-- 顶部装饰 -->
+  <view class="top-decoration"></view>
+  
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="header-icon">📝</view>
+    <view class="header-text">
+      <text class="page-title">创建新任务</text>
+      <text class="page-subtitle">提交任务申请，等待审批者审核</text>
+    </view>
+  </view>
+
+  <!-- 表单卡片 -->
+  <view class="form-card">
+    <!-- 任务标题 -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-text required">任务标题</text>
+        <text class="label-icon">✏️</text>
+      </view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          placeholder="请输入任务标题（最多100字）"
+          maxlength="100"
+          bindinput="onTitleInput"
+          value="{{formData.title}}"
+        />
+        <view class="input-counter">{{formData.title.length}}/100</view>
+      </view>
+    </view>
+
+    <!-- 任务描述 -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-text">任务描述</text>
+        <text class="label-icon">📄</text>
+      </view>
+      <view class="textarea-wrapper">
+        <textarea 
+          class="form-textarea" 
+          placeholder="请详细描述任务内容、要求和完成标准..."
+          maxlength="500"
+          bindinput="onDescriptionInput"
+          value="{{formData.description}}"
+        />
+        <view class="textarea-counter">{{formData.description.length}}/500</view>
+      </view>
+    </view>
+
+    <!-- 任务积分 -->
+    <view class="form-group">
+      <view class="form-label">
+        <text class="label-text required">任务积分</text>
+        <text class="label-icon">💎</text>
+      </view>
+      <view class="points-wrapper">
+        <view class="points-input-container">
+          <input 
+            class="points-input" 
+            type="number"
+            placeholder="0"
+            bindinput="onPointsInput"
+            value="{{formData.points}}"
+          />
+          <text class="points-unit">碎片</text>
+        </view>
+        <view class="points-info">
+          <text class="info-title">任务积分说明</text>
+          <text class="info-detail">完成任务后可获得的碎片数量，建议根据任务难度合理设置</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 任务预览 -->
+    <view class="preview-section" wx:if="{{formData.title || formData.description}}">
+      <view class="preview-header">
+        <text class="preview-title">任务预览</text>
+      </view>
+      <view class="preview-content">
+        <view class="preview-title-text" wx:if="{{formData.title}}">{{formData.title}}</view>
+        <view class="preview-desc-text" wx:if="{{formData.description}}">{{formData.description}}</view>
+        <view class="preview-points" wx:if="{{formData.points}}">
+          <text class="points-value">{{formData.points}}</text>
+          <text class="points-label">碎片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提交区域 -->
+  <view class="bottom-section">
+    <view class="tips">
+      <text class="tip-text">💡 提示：任务创建后不可修改，请仔细填写</text>
+    </view>
+    <button 
+      class="submit-btn" 
+      bindtap="onSubmit"
+      disabled="{{submitting || !formData.title || !formData.points}}"
+      loading="{{submitting}}"
+    >
+      <view class="btn-content" wx:if="{{!submitting}}">
+        <text class="btn-icon">🚀</text>
+        <text class="btn-text">提交任务</text>
+      </view>
+      <text class="btn-loading" wx:else>提交中...</text>
+    </button>
+  </view>
+</view>

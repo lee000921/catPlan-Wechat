@@ -1,0 +1,157 @@
+<view class="container">
+  <!-- 顶部装饰 -->
+  <view class="top-decoration"></view>
+  
+  <!-- 用户信息卡片 -->
+  <view class="user-card" wx:if="{{userInfo}}">
+    <view class="user-header">
+      <view class="user-avatar-section">
+        <image class="user-avatar" src="{{userInfo.avatarUrl}}"></image>
+        <view class="user-info-text">
+          <text class="user-name">{{userInfo.nickName}}</text>
+          <text class="user-role">{{userType === 'A' ? '申请者' : '审批者'}}</text>
+        </view>
+      </view>
+      <view class="user-actions">
+        <button class="role-switch-btn" bindtap="onToggleUserType">
+          <text class="switch-icon">🔄</text>
+          <text class="switch-text">切换角色</text>
+        </button>
+        <button class="logout-btn" bindtap="onLogout">
+          <text class="logout-icon">🚪</text>
+          <text class="logout-text">退出</text>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-header">
+      <text class="stats-title">任务统计</text>
+      <text class="stats-subtitle">实时更新</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-box">
+        <view class="stat-icon">📋</view>
+        <text class="stat-number">{{stats.total}}</text>
+        <text class="stat-label">任务总数</text>
+      </view>
+      <view class="stat-box">
+        <view class="stat-icon">⏳</view>
+        <text class="stat-number">{{stats.pending}}</text>
+        <text class="stat-label">待审批</text>
+      </view>
+      <view class="stat-box">
+        <view class="stat-icon">✅</view>
+        <text class="stat-number">{{stats.approved}}</text>
+        <text class="stat-label">已通过</text>
+      </view>
+      <view class="stat-box">
+        <view class="stat-icon">🎉</view>
+        <text class="stat-number">{{stats.completed}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 审批者视图切换（仅B类用户可见） -->
+  <view class="view-switcher" wx:if="{{userType === 'B' || (userType && userType.includes('B'))}}">
+    <view class="switcher-tabs">
+      <view class="tab-item {{!showMyApprovals ? 'active' : ''}}" bindtap="onSwitchView" data-view="pending">
+        <text class="tab-icon">📝</text>
+        <text class="tab-text">待审批</text>
+        <view class="tab-badge" wx:if="{{stats.pending > 0}}">{{stats.pending}}</view>
+      </view>
+      <view class="tab-item {{showMyApprovals ? 'active' : ''}}" bindtap="onSwitchView" data-view="my">
+        <text class="tab-icon">📂</text>
+        <text class="tab-text">我的审批</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 任务列表 -->
+  <scroll-view class="task-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:if="{{!loading && tasks.length === 0}}" class="empty-container">
+      <view class="empty-icon">📭</view>
+      <text class="empty-title">暂无任务</text>
+      <text class="empty-subtitle">{{showMyApprovals ? '还没有审批过任何任务' : '还没有任务记录'}}</text>
+    </view>
+    
+    <!-- 任务列表 -->
+    <view class="task-list">
+      <view wx:for="{{tasks}}" wx:key="id" class="task-card {{showMyApprovals ? 'approval-view' : ''}}" bindtap="onTaskTap" data-task-id="{{item.id}}">
+        <!-- 任务状态指示条 -->
+        <view class="status-indicator status-{{item.status}}"></view>
+        
+        <!-- 任务头部 -->
+        <view class="task-header">
+          <view class="task-title-section">
+            <text class="task-title">{{item.title}}</text>
+            <view class="task-meta">
+              <text class="task-date">{{item.created_at.substring(5, 10)}}</text>
+              <text class="task-id">#{{item.id}}</text>
+            </view>
+          </view>
+          <view class="task-status-badge status-{{item.status}}">
+            <text class="status-icon">
+              {{item.status === 'pending' ? '⏳' : item.status === 'approved' ? '✅' : item.status === 'rejected' ? '❌' : '🎉'}}
+            </text>
+            <text class="status-text">
+              {{item.status === 'pending' ? '待审批' : item.status === 'approved' ? '已通过' : item.status === 'rejected' ? '已拒绝' : '已完成'}}
+            </text>
+          </view>
+        </view>
+        
+        <!-- 任务描述 -->
+        <view class="task-desc" wx:if="{{item.description}}">
+          <text class="desc-text">{{item.description}}</text>
+        </view>
+        
+        <!-- 审批信息（仅在"我的审批"视图中显示） -->
+        <view class="approval-info" wx:if="{{showMyApprovals && item.approval_date}}">
+          <view class="approval-meta">
+            <text class="approval-date">审批时间：{{item.approval_date.substring(5, 16)}}</text>
+            <view class="approval-status-badge {{item.approval_status}}">
+              {{item.approval_status === 'approved' ? '已通过' : '已拒绝'}}
+            </view>
+          </view>
+          <view class="approval-comment" wx:if="{{item.approval_comment}}">
+            {{item.approval_comment}}
+          </view>
+        </view>
+        
+        <!-- 任务底部信息 -->
+        <view class="task-footer">
+          <view class="task-points">
+            <text class="points-icon">💎</text>
+            <text class="points-value">{{item.points}}</text>
+            <text class="points-label">碎片</text>
+          </view>
+          <view class="task-action">
+            <text class="action-text">{{showMyApprovals ? '查看详情' : '点击查看详情'}}</text>
+            <text class="action-arrow">→</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部安全区域 -->
+    <view class="safe-bottom"></view>
+  </scroll-view>
+
+  <!-- 悬浮创建按钮（A类和AB类用户可见） -->
+  <view class="fab-container" wx:if="{{userType === 'A' || (userType && userType.includes('A'))}}">
+    <button class="fab-main" bindtap="onSubmitTask">
+      <text class="fab-icon">✨</text>
+    </button>
+    <view class="fab-ripple"></view>
+  </view>
+</view>
