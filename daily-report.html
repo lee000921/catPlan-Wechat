@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>catPlan 项目日报</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .report-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .report-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .report-date {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1989fa;
+            margin-bottom: 10px;
+        }
+        .report-title {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .stat-item {
+            background: #f5f6f7;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1989fa;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+        .report-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1989fa 0%, #3699ff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回官网</a>
+        <h1>📊 catPlan 项目日报</h1>
+        
+        <div class="report-list">
+            <!-- 第 2 期 -->
+            <div class="report-card" onclick="window.open('reports/daily/2026-03-05.md', '_blank')">
+                <div class="report-date">2026-03-05</div>
+                <div class="report-title">第 2 期 - 商城功能完成 + 周期任务上线</div>
+                <div class="report-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">功能开发</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">测试通过</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Bug 修复</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">待发布</div>
+                        <div class="stat-label">版本状态</div>
+                    </div>
+                </div>
+                <a class="report-link">查看详情 →</a>
+            </div>
+
+            <!-- 第 1 期 -->
+            <div class="report-card" onclick="window.open('reports/daily/2026-03-04.md', '_blank')">
+                <div class="report-date">2026-03-04</div>
+                <div class="report-title">第 1 期 - 项目启动 + 团队组建</div>
+                <div class="report-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">9</div>
+                        <div class="stat-label">团队成员</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">功能模块</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">测试通过</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">已完成</div>
+                        <div class="stat-label">版本状态</div>
+                    </div>
+                </div>
+                <a class="report-link">查看详情 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

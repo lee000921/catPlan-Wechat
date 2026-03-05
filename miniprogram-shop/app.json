@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/shop/list/list",
+    "pages/shop/detail/detail",
+    "pages/shop/exchange/exchange",
+    "pages/shop/history/history"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#4A90D9",
+    "navigationBarTitleText": "积分商城",
+    "navigationBarTextStyle": "white"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,38 @@
+<!--pages/shop/history/history.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">兑换记录</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:elif="{{error}}" class="error">
+    <text>{{error}}</text>
+    <view class="retry-btn" bindtap="loadHistory">重试</view>
+  </view>
+
+  <!-- 记录列表 -->
+  <view wx:else class="record-list">
+    <view wx:for="{{records}}" wx:key="id" class="record-card">
+      <view class="record-info">
+        <text class="record-name">{{item.itemName || item.name}}</text>
+        <text class="record-price">{{item.price || item.points}} 积分</text>
+        <text class="record-time">兑换时间：{{item.createdAt || item.time}}</text>
+      </view>
+      <view class="record-status {{item.status === 'success' ? 'success' : ''}}">
+        <text wx:if="{{item.status}}">{{item.status === 'success' ? '成功' : '失败'}}</text>
+        <text wx:else>已完成</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{records.length === 0}}" class="empty">
+      <text>暂无兑换记录</text>
+    </view>
+  </view>
+</view>

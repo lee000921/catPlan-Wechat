@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team AI Dev - 文档查看</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(255,215,0,0.3);
+            border: 2px solid #ffd700;
+            border-radius: 25px;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,215,0,0.5); transform: translateY(-2px); }
+        .doc-content {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .doc-content h1 { font-size: 2rem; margin-bottom: 20px; color: #ffd700; }
+        .doc-content h2 { font-size: 1.5rem; margin: 30px 0 15px; color: #ffd700; }
+        .doc-content h3 { font-size: 1.2rem; margin: 20px 0 10px; }
+        .doc-content p { margin-bottom: 15px; opacity: 0.9; }
+        .doc-content ul, .doc-content ol { margin: 15px 0 15px 30px; opacity: 0.9; }
+        .doc-content li { margin-bottom: 8px; }
+        .doc-content code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+        }
+        .doc-content pre {
+            background: rgba(0,0,0,0.4);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        .doc-content pre code { background: none; padding: 0; }
+        .doc-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .doc-content th, .doc-content td {
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px;
+            text-align: left;
+        }
+        .doc-content th { background: rgba(255,215,0,0.2); }
+        .doc-meta {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <div class="doc-content" id="content">
+            <p style="text-align: center; font-size: 1.2rem;">加载中...</p>
+        </div>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const doc = params.get('doc');
+        if (doc) {
+            fetch('docs/' + doc)
+                .then(r => r.text())
+                .then(text => {
+                    // 简单 Markdown 转 HTML
+                    let html = text
+                        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+                        .replace(/`(.*?)`/gim, '<code>$1</code>')
+                        .replace(/\n- (.*$)/gim, '<li>$1</li>')
+                        .replace(/\n\d+\. (.*$)/gim, '<li>$1</li>')
+                        .replace(/\n\n/gim, '</p><p>')
+                        .replace(/\| (.*) \|/gim, '<tr><td>$1</td></tr>');
+                    
+                    document.getElementById('content').innerHTML = 
+                        '<div class="doc-meta">📄 ' + doc + '</div>' +
+                        '<div style="white-space: pre-wrap;">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+                })
+                .catch(e => {
+                    document.getElementById('content').innerHTML = '<p>文档加载失败：' + e.message + '</p>';
+                });
+        } else {
+            document.getElementById('content').innerHTML = '<p>请指定文档名称</p>';
+        }
+    </script>
+</body>
+</html>

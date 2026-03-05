@@ -1,0 +1,29 @@
+{
+  "name": "points-mall-backend",
+  "version": "1.0.0",
+  "description": "积分商城后端 - 支持周期任务功能",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scheduler:test": "node -e \"const s = require('./scheduler/taskScheduler'); s.trigger().then(console.log).catch(console.error);\""
+  },
+  "keywords": [
+    "points",
+    "mall",
+    "periodic-task",
+    "cron"
+  ],
+  "author": "Luban (Backend-2)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

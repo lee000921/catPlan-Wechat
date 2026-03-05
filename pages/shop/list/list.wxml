@@ -1,0 +1,47 @@
+<!--pages/shop/list/list.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">商城兑换</text>
+    <view class="history-btn" bindtap="goToHistory">
+      <text>兑换记录</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:elif="{{error}}" class="error">
+    <text>{{error}}</text>
+    <view class="retry-btn" bindtap="loadItems">重试</view>
+  </view>
+
+  <!-- 物品列表 -->
+  <view wx:else class="item-list">
+    <view wx:for="{{items}}" wx:key="id" class="item-card">
+      <view class="item-info">
+        <text class="item-name">{{item.name}}</text>
+        <text class="item-price">{{item.price}} 积分</text>
+        <text class="item-stock">库存：{{item.stock}}</text>
+      </view>
+      <view 
+        class="exchange-btn {{item.stock <= 0 ? 'disabled' : ''}}"
+        data-id="{{item.id}}"
+        data-name="{{item.name}}"
+        data-price="{{item.price}}"
+        bindtap="onExchange"
+      >
+        <text wx:if="{{item.stock > 0}}">立即兑换</text>
+        <text wx:else>已兑完</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{items.length === 0}}" class="empty">
+      <text>暂无可兑换物品</text>
+    </view>
+  </view>
+</view>
