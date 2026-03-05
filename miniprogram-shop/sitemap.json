@@ -1,7 +1,0 @@
-{
-  "desc": "关于 sitemap 的配置说明可参考：https://developers.weixin.qq.com/miniprogram/dev/framework/sitemap.html",
-  "rules": [{
-    "action": "allow",
-    "page": "*"
-  }]
-}
