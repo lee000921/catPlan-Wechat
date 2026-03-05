@@ -1,0 +1,149 @@
+<!--pages/shop/exchange/exchange.wxml-->
+<view class="container" wx:if="{{!loading && product}}">
+  <!-- 商品信息卡片 -->
+  <view class="product-card">
+    <view class="product-header">
+      <view class="image-wrapper">
+        <image class="product-image" src="{{product.imageUrl || '/images/default-product.png'}}" mode="aspectFill"></image>
+      </view>
+      <view class="product-info">
+        <text class="product-name">{{product.name}}</text>
+        <view class="points-display">
+          <text class="points-value">{{product.points}}</text>
+          <text class="points-unit">积分/件</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 兑换数量选择 -->
+  <view class="section-card">
+    <view class="section-header">
+      <text class="section-icon">🔢</text>
+      <text class="section-title">兑换数量</text>
+    </view>
+    <view class="quantity-control">
+      <view 
+        class="quantity-btn minus" 
+        data-type="minus"
+        bindtap="changeCount"
+      >
+        <text class="btn-text">−</text>
+      </view>
+      <view class="quantity-display">
+        <input 
+          class="quantity-input" 
+          type="number" 
+          value="{{exchangeCount}}" 
+          bindinput="inputCount"
+        />
+        <text class="quantity-label">件</text>
+      </view>
+      <view 
+        class="quantity-btn plus" 
+        data-type="add"
+        bindtap="changeCount"
+      >
+        <text class="btn-text">+</text>
+      </view>
+    </view>
+    <view class="quantity-tips">
+      <text wx:if="{{product.limitPerUser}}">每人限兑{{product.limitPerUser}}件</text>
+      <text wx:if="{{product.stock}}">库存{{product.stock}}件</text>
+    </view>
+  </view>
+
+  <!-- 积分明细 -->
+  <view class="section-card">
+    <view class="section-header">
+      <text class="section-icon">📊</text>
+      <text class="section-title">积分明细</text>
+    </view>
+    <view class="detail-list">
+      <view class="detail-row">
+        <text class="detail-label">单价</text>
+        <text class="detail-value">{{product.points}} 积分</text>
+      </view>
+      <view class="detail-row">
+        <text class="detail-label">数量</text>
+        <text class="detail-value">× {{exchangeCount}}</text>
+      </view>
+      <view class="detail-row total-row">
+        <text class="detail-label total-label">共需</text>
+        <view class="total-display">
+          <text class="total-value">{{product.points * exchangeCount}}</text>
+          <text class="total-unit">积分</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户当前积分 -->
+  <view class="points-summary-card">
+    <view class="summary-row">
+      <text class="summary-label">我的积分</text>
+      <text class="summary-value current">{{points}}</text>
+    </view>
+    <view class="summary-row after">
+      <text class="summary-label">兑换后剩余</text>
+      <text class="summary-value after {{points - product.points * exchangeCount < 0 ? 'warning' : 'safe'}}">
+        {{points - product.points * exchangeCount}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 兑换说明 -->
+  <view class="notice-card">
+    <view class="notice-header">
+      <text class="notice-icon">⚠️</text>
+      <text class="notice-title">兑换须知</text>
+    </view>
+    <view class="notice-list">
+      <view class="notice-item">
+        <view class="notice-check">✓</view>
+        <text class="notice-text">仅 A 类用户（申请者）可兑换</text>
+      </view>
+      <view class="notice-item">
+        <view class="notice-check">✓</view>
+        <text class="notice-text">兑换后积分立即扣除，不可恢复</text>
+      </view>
+      <view class="notice-item">
+        <view class="notice-check">✓</view>
+        <text class="notice-text">兑换成功后请联系管理员领取</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部确认栏 -->
+  <view class="bottom-bar">
+    <view class="total-summary">
+      <text class="total-label">总计</text>
+      <view class="total-amount">
+        <text class="total-value">{{product.points * exchangeCount}}</text>
+        <text class="total-unit">积分</text>
+      </view>
+    </view>
+    <view 
+      class="confirm-btn {{canExchange && !submitting ? '' : 'disabled'}}"
+      bindtap="confirmExchange"
+    >
+      <text wx:if="{{!submitting}}">确认兑换</text>
+      <text wx:else>处理中...</text>
+    </view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-container" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">正在加载...</text>
+</view>
+
+<!-- 权限不足提示 -->
+<view class="permission-denied" wx:if="{{!isTypeA && !loading}}">
+  <view class="denied-card">
+    <view class="denied-icon">⚠️</view>
+    <text class="denied-title">权限不足</text>
+    <text class="denied-desc">仅 A 类用户可兑换商品</text>
+  </view>
+</view>

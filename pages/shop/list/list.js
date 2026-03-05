@@ -1,98 +1,142 @@
 // pages/shop/list/list.js
-const API_BASE = 'http://39.104.84.63:3000/api/shop';
-
 Page({
   data: {
-    items: [],
-    loading: false,
-    error: null
+    productList: [],
+    loading: true,
+    hasMore: true,
+    page: 1,
+    pageSize: 10,
+    userInfo: null,
+    isTypeA: false // 是否为 A 类用户（申请者）
   },
 
   onLoad() {
-    this.loadItems();
+    this.checkUserType();
+    this.loadProductList();
   },
 
-  onShow() {
-    // 每次显示页面时刷新数据
-    this.loadItems();
+  onPullDownRefresh() {
+    this.setData({ page: 1, hasMore: true });
+    this.loadProductList();
   },
 
-  async loadItems() {
-    this.setData({ loading: true, error: null });
-    
-    try {
-      const res = await wx.request({
-        url: `${API_BASE}/items`,
-        method: 'GET',
-        timeout: 5000
-      });
-      
-      if (res.statusCode === 200 && res.data) {
-        this.setData({ items: res.data });
-      } else {
-        this.setData({ error: '加载失败，请稍后重试' });
-      }
-    } catch (err) {
-      console.error('加载物品列表失败:', err);
-      this.setData({ error: '网络错误，请检查连接' });
-    } finally {
-      this.setData({ loading: false });
+  onReachBottom() {
+    if (this.data.hasMore && !this.data.loading) {
+      this.loadProductList(true);
     }
   },
 
-  async onExchange(e) {
-    const { id, name, price } = e.currentTarget.dataset;
-    
-    wx.showModal({
-      title: '确认兑换',
-      content: `确定要兑换"${name}"吗？（${price}积分）`,
-      success: async (modalRes) => {
-        if (modalRes.confirm) {
-          await this.doExchange(id, name, price);
+  // 检查用户类型
+  checkUserType() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.setData({
+        userInfo,
+        isTypeA: userInfo.userType === 'A'
+      });
+    } else {
+      // 从后端获取用户信息
+      this.fetchUserInfo();
+    }
+  },
+
+  fetchUserInfo() {
+    wx.request({
+      url: getApp().globalData.baseUrl + '/user/info',
+      method: 'GET',
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          const userInfo = res.data.data;
+          wx.setStorageSync('userInfo', userInfo);
+          this.setData({
+            userInfo,
+            isTypeA: userInfo.userType === 'A'
+          });
         }
+      },
+      fail: (err) => {
+        console.error('获取用户信息失败', err);
       }
     });
   },
 
-  async doExchange(itemId, itemName, price) {
-    wx.showLoading({ title: '兑换中...' });
+  // 加载商品列表
+  loadProductList(isLoadMore = false) {
+    this.setData({ loading: true });
+
+    const { page, pageSize } = this.data;
     
-    try {
-      const res = await wx.request({
-        url: `${API_BASE}/exchange`,
-        method: 'POST',
-        data: { itemId },
-        timeout: 5000
-      });
-      
-      wx.hideLoading();
-      
-      if (res.statusCode === 200 && res.data) {
+    wx.request({
+      url: getApp().globalData.baseUrl + '/shop/products',
+      method: 'GET',
+      data: {
+        page: isLoadMore ? page + 1 : 1,
+        pageSize
+      },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          const { list, total, page: currentPage, pageSize: size } = res.data.data;
+          
+          if (isLoadMore) {
+            this.setData({
+              productList: [...this.data.productList, ...list],
+              page: currentPage,
+              loading: false,
+              hasMore: this.data.productList.length + list.length < total
+            });
+          } else {
+            this.setData({
+              productList: list,
+              page: currentPage,
+              loading: false,
+              hasMore: list.length < total
+            });
+          }
+          
+          // 停止下拉刷新
+          wx.stopPullDownRefresh();
+        } else {
+          this.setData({ loading: false });
+          wx.showToast({
+            title: '加载失败',
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        console.error('加载商品列表失败', err);
+        this.setData({ loading: false });
+        wx.stopPullDownRefresh();
         wx.showToast({
-          title: '兑换成功',
-          icon: 'success'
-        });
-        // 刷新列表
-        this.loadItems();
-      } else {
-        wx.showToast({
-          title: res.data?.message || '兑换失败',
+          title: '网络错误',
           icon: 'none'
         });
       }
-    } catch (err) {
-      wx.hideLoading();
-      console.error('兑换失败:', err);
-      wx.showToast({
-        title: '网络错误',
-        icon: 'none'
-      });
-    }
+    });
   },
 
-  goToHistory() {
+  // 点击商品查看详情
+  goToDetail(e) {
+    const { id } = e.currentTarget.dataset;
     wx.navigateTo({
-      url: '/pages/shop/history/history'
+      url: `/pages/shop/detail/detail?id=${id}`
+    });
+  },
+
+  // 立即兑换
+  exchangeNow(e) {
+    if (!this.data.isTypeA) {
+      wx.showModal({
+        title: '权限不足',
+        content: '仅 A 类用户（申请者）可以进行兑换',
+        showCancel: false
+      });
+      return;
+    }
+
+    const { id } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/shop/exchange/exchange?id=${id}`
     });
   }
-});
+})
