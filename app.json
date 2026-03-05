@@ -1,5 +1,10 @@
 {
   "pages": [
+    "pages/login/login",
+    "pages/tasks/tasks",
+    "pages/task-submit/task-submit",
+    "pages/task-detail/task-detail",
+    "pages/signin/signin",
     "pages/shop/list/list",
     "pages/shop/detail/detail",
     "pages/shop/exchange/exchange",
@@ -7,9 +12,35 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#4A90D9",
-    "navigationBarTitleText": "积分商城",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "catPlan",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#1989fa",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/tasks/tasks",
+        "text": "任务",
+        "iconPath": "images/tasks.png",
+        "selectedIconPath": "images/tasks-active.png"
+      },
+      {
+        "pagePath": "pages/signin/signin",
+        "text": "签到",
+        "iconPath": "images/signin.png",
+        "selectedIconPath": "images/signin-active.png"
+      },
+      {
+        "pagePath": "pages/shop/list/list",
+        "text": "商城",
+        "iconPath": "images/shop.png",
+        "selectedIconPath": "images/shop-active.png"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"
