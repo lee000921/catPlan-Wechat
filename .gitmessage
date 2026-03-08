@@ -1,0 +1,22 @@
+<type>(scope): <subject>
+
+<body>
+
+Co-authored-by: <花名> <角色>
+
+# <type> 说明:
+# feat: 新功能
+# fix: Bug 修复
+# docs: 文档更新
+# style: 代码格式
+# refactor: 重构
+# test: 测试
+# chore: 构建/工具
+
+# 示例:
+# feat(shop): 添加兑换功能
+#
+# - 实现 POST /api/shop/exchange 路由
+# - 添加库存验证逻辑
+#
+# Co-authored-by: 扳手 🔧

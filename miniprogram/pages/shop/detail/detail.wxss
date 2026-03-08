@@ -1,6 +1,7 @@
-/* pages/shop/detail/detail.wxss */
+/* 商城详情页样式 - 蓝色系设计 */
 .container {
   padding-bottom: 140rpx;
+  background: #f0f5ff;
 }
 
 /* 商品图片 */
@@ -17,9 +18,24 @@
 
 /* 商品信息卡片 */
 .product-info {
-  margin-top: -40rpx;
+  margin: -40rpx 24rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
   position: relative;
   z-index: 10;
+  box-shadow: 0 4rpx 20rpx rgba(24, 144, 255, 0.08);
+}
+
+.product-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: linear-gradient(90deg, #1890ff, #40a9ff);
+  border-radius: 24rpx 24rpx 0 0;
 }
 
 .product-header {
@@ -32,7 +48,7 @@
   flex: 1;
   font-size: 36rpx;
   font-weight: 600;
-  color: #333;
+  color: #262626;
   margin-right: 20rpx;
 }
 
@@ -40,14 +56,14 @@
   text-align: right;
 }
 
-.points-value {
+.product-points .points-value {
   font-size: 44rpx;
   font-weight: bold;
   color: #ff6b35;
   display: block;
 }
 
-.points-label {
+.product-points .points-label {
   font-size: 24rpx;
   color: #ff6b35;
 }
@@ -68,13 +84,13 @@
 
 .meta-label {
   font-size: 24rpx;
-  color: #999;
+  color: #8c8c8c;
   margin-right: 8rpx;
 }
 
 .meta-value {
   font-size: 28rpx;
-  color: #333;
+  color: #262626;
   font-weight: 500;
 }
 
@@ -84,7 +100,7 @@
   margin-top: 20rpx;
   padding: 8rpx 20rpx;
   background-color: rgba(82, 196, 26, 0.1);
-  border-radius: 8rpx;
+  border-radius: 12rpx;
   color: #52c41a;
   font-size: 26rpx;
 }
@@ -96,31 +112,39 @@
 
 .product-status-tag.out-of-stock {
   background-color: #f5f5f5;
-  color: #999;
+  color: #8c8c8c;
 }
 
 /* 商品描述 */
 .product-description {
-  margin-top: 20rpx;
+  margin: 0 24rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(24, 144, 255, 0.08);
 }
 
 .section-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: #262626;
   margin-bottom: 16rpx;
 }
 
 .desc-text {
   font-size: 28rpx;
-  color: #666;
+  color: #595959;
   line-height: 1.8;
   white-space: pre-wrap;
 }
 
 /* 兑换说明 */
 .exchange-rules {
-  margin-top: 20rpx;
+  margin: 0 24rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(24, 144, 255, 0.08);
 }
 
 .rule-item {
@@ -137,13 +161,17 @@
 .rule-text {
   flex: 1;
   font-size: 26rpx;
-  color: #666;
+  color: #595959;
   line-height: 1.6;
 }
 
 /* 用户积分 */
 .user-points {
-  margin-top: 20rpx;
+  margin: 0 24rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(24, 144, 255, 0.08);
 }
 
 .points-row {
@@ -165,12 +193,12 @@
   border-bottom: none;
 }
 
-.points-label {
+.points-row .points-label {
   font-size: 28rpx;
-  color: #666;
+  color: #595959;
 }
 
-.points-value {
+.points-row .points-value {
   font-size: 36rpx;
   font-weight: bold;
   color: #ff6b35;
@@ -178,7 +206,7 @@
 
 .after-label {
   font-size: 26rpx;
-  color: #999;
+  color: #8c8c8c;
 }
 
 .after-value {
@@ -197,7 +225,7 @@
   align-items: center;
   padding: 20rpx 30rpx;
   background-color: white;
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -2rpx 12rpx rgba(24, 144, 255, 0.08);
   z-index: 100;
 }
 
@@ -215,31 +243,32 @@
 
 .history-btn text:last-child {
   font-size: 22rpx;
-  color: #666;
+  color: #595959;
 }
 
 .exchange-btn {
   flex: 1;
-  background-color: #4A90D9;
+  background: linear-gradient(135deg, #1890ff, #40a9ff);
   color: white;
   text-align: center;
-  padding: 24rpx 0;
-  border-radius: 12rpx;
+  padding: 28rpx 0;
+  border-radius: 48rpx;
   font-size: 32rpx;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 8rpx 24rpx rgba(24, 144, 255, 0.3);
 }
 
 .exchange-btn:active {
-  background-color: #3a7bc8;
+  transform: translateY(2rpx);
 }
 
 .exchange-btn-disabled {
   flex: 1;
   background-color: #f5f5f5;
-  color: #999;
+  color: #bfbfbf;
   text-align: center;
-  padding: 24rpx 0;
-  border-radius: 12rpx;
+  padding: 28rpx 0;
+  border-radius: 48rpx;
   font-size: 32rpx;
 }
 
@@ -249,9 +278,10 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: #f0f5ff;
 }
 
 .loading-text {
-  color: #999;
+  color: #8c8c8c;
   font-size: 28rpx;
 }

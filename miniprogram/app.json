@@ -12,15 +12,15 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "#1890ff",
     "navigationBarTitleText": "CatPlan",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "white"
   },
   "tabBar": {
-    "color": "#999",
-    "selectedColor": "#1989fa",
+    "color": "#8c8c8c",
+    "selectedColor": "#1890ff",
     "backgroundColor": "#fff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/tasks/tasks",
@@ -29,6 +29,10 @@
       {
         "pagePath": "pages/signin/signin",
         "text": "签到"
+      },
+      {
+        "pagePath": "pages/shop/list/list",
+        "text": "商城"
       }
     ]
   }
