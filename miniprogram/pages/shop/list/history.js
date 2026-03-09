@@ -41,7 +41,7 @@ Page({
     const currentPage = isLoadMore ? page + 1 : 1;
 
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/exchange/history',
+      url: getApp().globalData.backendBase + '/api/shop/exchange-history',
       method: 'GET',
       data: {
         page: currentPage,

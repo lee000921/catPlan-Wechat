@@ -6,6 +6,7 @@ Page({
     userInfo: null,
     openid: '',
     userType: 'A',
+    taskId: null,
     task: null,
     approvals: [],
     loading: true,
@@ -40,6 +41,7 @@ Page({
     }
     
     if (options.id) {
+      this.setData({ taskId: options.id });
       this.loadTaskDetail(options.id);
     }
   },
@@ -53,8 +55,8 @@ Page({
       openid: openid
     });
     
-    if (this.data.task && this.data.task.id) {
-      this.loadTaskDetail(this.data.task.id);
+    if (this.data.taskId) {
+      this.loadTaskDetail(this.data.taskId);
     }
   },
 
@@ -172,10 +174,15 @@ Page({
 
     this.setData({ submitting: true });
 
+    const token = wx.getStorageSync('catplan_token') || wx.getStorageSync('token') || '';
+
     wx.request({
       url: `${backendBase}/api/tasks/${taskId}/approve`,
       method: 'POST',
-      header: { 'content-type': 'application/json' },
+      header: {
+        'content-type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
       data: {
         approver_openid: openid,
         status: status,

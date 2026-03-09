@@ -1,4 +1,6 @@
 // pages/shop/history/history.js
+const app = getApp();
+
 Page({
   data: {
     exchangeList: [],
@@ -39,20 +41,24 @@ Page({
 
     const { page, pageSize } = this.data;
     const currentPage = isLoadMore ? page + 1 : 1;
+    const offset = (currentPage - 1) * pageSize;
+
+    const token = wx.getStorageSync('catplan_token') || wx.getStorageSync('token') || '';
 
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/exchange/history',
+      url: app.globalData.backendBase + '/api/shop/exchange-history',
       method: 'GET',
       data: {
-        page: currentPage,
-        pageSize
+        limit: pageSize,
+        offset
       },
-      header: {
-        'Authorization': 'Bearer ' + (wx.getStorageSync('token') || '')
-      },
+      header: token ? {
+        'Authorization': 'Bearer ' + token
+      } : {},
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const { list, total } = res.data.data;
+        if (res.statusCode === 200 && res.data && res.data.ok) {
+          const list = res.data.exchanges || [];
+          const total = typeof res.data.total === 'number' ? res.data.total : list.length;
           
           if (isLoadMore) {
             this.setData({

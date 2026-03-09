@@ -18,9 +18,10 @@ interface ApiResponse<T = any> {
   timestamp: number;
 }
 
-// 从本地存储获取 token
+// 从本地存储获取 token（兼容旧 key）
 function getToken(): string {
-  const token = wx.getStorageSync('token');
+  // 新版统一使用 catplan_token，兼容读取旧的 token key
+  const token = wx.getStorageSync('catplan_token') || wx.getStorageSync('token');
   return token || '';
 }
 
@@ -182,15 +183,34 @@ export function del<T = any>(
  * 获取 API 基础 URL
  */
 function getApiBaseUrl(): string {
-  // 可根据环境变量或条件编译来选择不同的 API 服务器
-  return 'http://39.104.84.63:3000'; // 正式环境
-  // return 'http://localhost:3000'; // 开发环境
+  // 优先从全局 app 配置读取，保证与小程序其它页面保持一致
+  try {
+    const app = getApp<{
+      globalData?: { backendBase?: string; baseUrl?: string };
+    }>();
+    if (app && app.globalData) {
+      if (app.globalData.backendBase) {
+        return app.globalData.backendBase;
+      }
+      if (app.globalData.baseUrl) {
+        return app.globalData.baseUrl;
+      }
+    }
+  } catch (e) {
+    // getApp 在极早期调用时可能不可用，忽略错误走默认值
+  }
+
+  // 默认回退到正式环境域名（需在微信后台配置为合法 request 域名）
+  return 'https://catplan.xin';
+  // return 'http://localhost:3000'; // 如需本地开发可暂时切换
 }
 
 /**
  * 保存 token 到本地存储
  */
 export function setToken(token: string): void {
+  // 统一存到 catplan_token，并兼容旧 key
+  wx.setStorageSync('catplan_token', token);
   wx.setStorageSync('token', token);
 }
 
@@ -198,6 +218,8 @@ export function setToken(token: string): void {
  * 清除 token
  */
 export function clearToken(): void {
+  wx.removeStorageSync('catplan_token');
   wx.removeStorageSync('token');
   wx.removeStorageSync('userInfo');
+  wx.removeStorageSync('catplan_user');
 }

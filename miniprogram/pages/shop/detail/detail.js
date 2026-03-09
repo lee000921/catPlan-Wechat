@@ -1,4 +1,6 @@
-// pages/shop/list/detail/detail.js
+// pages/shop/detail/detail.js
+const app = getApp();
+
 Page({
   data: {
     product: null,
@@ -25,68 +27,51 @@ Page({
     }
   },
 
-  // 检查用户类型
+  // 检查用户类型与积分（基于登录缓存与 /api/user/profile）
   checkUserType() {
-    const userInfo = wx.getStorageSync('userInfo');
-    const points = wx.getStorageSync('points');
-    
-    if (userInfo) {
-      this.setData({
-        userInfo,
-        isTypeA: userInfo.userType === 'A',
-        points: points || 0
+    const cachedUser = wx.getStorageSync('catplan_user') || null;
+    const userType = wx.getStorageSync('catplan_user_type') || 'A';
+    const openid = wx.getStorageSync('catplan_user_openid') || '';
+
+    this.setData({
+      userInfo: cachedUser,
+      isTypeA: typeof userType === 'string' && userType.indexOf('A') !== -1
+    });
+
+    if (openid) {
+      const token = wx.getStorageSync('catplan_token') || '';
+      wx.request({
+        url: app.globalData.backendBase + '/api/user/profile',
+        method: 'GET',
+        data: { openid },
+        header: token ? { Authorization: 'Bearer ' + token } : {},
+        success: (res) => {
+          if (res.statusCode === 200 && res.data && typeof res.data.points !== 'undefined') {
+            this.setData({ points: res.data.points });
+          }
+        }
       });
-    } else {
-      this.fetchUserInfo();
     }
-  },
-
-  fetchUserInfo() {
-    wx.request({
-      url: getApp().globalData.baseUrl + '/user/info',
-      method: 'GET',
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const userInfo = res.data.data;
-          wx.setStorageSync('userInfo', userInfo);
-          this.setData({
-            userInfo,
-            isTypeA: userInfo.userType === 'A'
-          });
-        }
-      }
-    });
-
-    // 获取积分余额
-    wx.request({
-      url: getApp().globalData.baseUrl + '/user/points',
-      method: 'GET',
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const points = res.data.data.points;
-          wx.setStorageSync('points', points);
-          this.setData({ points });
-        }
-      }
-    });
   },
 
   // 加载商品详情
   loadProductDetail(id) {
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/products/' + id,
+      url: app.globalData.backendBase + '/api/shop/products/' + id,
       method: 'GET',
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
+        if (res.statusCode === 200 && res.data && res.data.ok) {
           this.setData({
-            product: res.data.data,
+            product: res.data.item,
             loading: false
           });
           
           // 设置页面标题
-          wx.setNavigationBarTitle({
-            title: res.data.data.name
-          });
+          if (res.data.item && res.data.item.name) {
+            wx.setNavigationBarTitle({
+              title: res.data.item.name
+            });
+          }
         } else {
           this.setData({ loading: false });
           wx.showToast({

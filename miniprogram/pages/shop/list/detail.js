@@ -74,19 +74,20 @@ Page({
   // 加载商品详情
   loadProductDetail(id) {
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/products/' + id,
+      url: getApp().globalData.backendBase + '/api/shop/products/' + id,
       method: 'GET',
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
+        if (res.statusCode === 200 && res.data && res.data.ok) {
           this.setData({
-            product: res.data.data,
+            product: res.data.item,
             loading: false
           });
           
-          // 设置页面标题
-          wx.setNavigationBarTitle({
-            title: res.data.data.name
-          });
+          if (res.data.item && res.data.item.name) {
+            wx.setNavigationBarTitle({
+              title: res.data.item.name
+            });
+          }
         } else {
           this.setData({ loading: false });
           wx.showToast({

@@ -79,7 +79,8 @@ Page({
     this.setData({ submitting: true });
 
     wx.request({
-      url: app.globalData.baseUrl + '/api/periodic-tasks/periodic',
+      // 使用新周期任务模板 API
+      url: app.globalData.backendBase + '/api/periodic-tasks',
       method: 'POST',
       data: {
         title: formData.title,

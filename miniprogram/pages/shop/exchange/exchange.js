@@ -1,4 +1,6 @@
 // pages/shop/exchange/exchange.js
+const app = getApp();
+
 Page({
   data: {
     product: null,
@@ -30,81 +32,55 @@ Page({
 
   // 检查用户类型和权限
   checkUserType() {
-    const userInfo = wx.getStorageSync('userInfo');
-    const points = wx.getStorageSync('points');
-    
-    if (userInfo) {
-      this.setData({
-        userInfo,
-        isTypeA: userInfo.userType === 'A',
-        points: points || 0
+    const cachedUser = wx.getStorageSync('catplan_user') || null;
+    const userType = wx.getStorageSync('catplan_user_type') || 'A';
+    const openid = wx.getStorageSync('catplan_user_openid') || '';
+
+    const isTypeA = typeof userType === 'string' && userType.indexOf('A') !== -1;
+
+    this.setData({
+      userInfo: cachedUser,
+      isTypeA
+    });
+
+    if (!isTypeA) {
+      wx.showModal({
+        title: '权限不足',
+        content: '仅 A 类用户（申请者）可以进行兑换',
+        showCancel: false,
+        success: () => {
+          wx.navigateBack();
+        }
       });
-      
-      // 如果不是 A 类用户，提示并返回
-      if (!userInfo.userType || userInfo.userType !== 'A') {
-        wx.showModal({
-          title: '权限不足',
-          content: '仅 A 类用户（申请者）可以进行兑换',
-          showCancel: false,
-          success: () => {
-            wx.navigateBack();
-          }
-        });
-      }
-    } else {
-      this.fetchUserInfo();
+      return;
     }
-  },
 
-  fetchUserInfo() {
-    wx.request({
-      url: getApp().globalData.baseUrl + '/user/info',
-      method: 'GET',
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const userInfo = res.data.data;
-          wx.setStorageSync('userInfo', userInfo);
-          this.setData({
-            userInfo,
-            isTypeA: userInfo.userType === 'A'
-          });
-          
-          if (!userInfo.userType || userInfo.userType !== 'A') {
-            wx.showModal({
-              title: '权限不足',
-              content: '仅 A 类用户（申请者）可以进行兑换',
-              showCancel: false,
-              success: () => {
-                wx.navigateBack();
-              }
-            });
+    if (openid) {
+      const token = wx.getStorageSync('catplan_token') || '';
+      wx.request({
+        url: app.globalData.backendBase + '/api/user/profile',
+        method: 'GET',
+        data: { openid },
+        header: token ? { Authorization: 'Bearer ' + token } : {},
+        success: (res) => {
+          if (res.statusCode === 200 && res.data && typeof res.data.points !== 'undefined') {
+            wx.setStorageSync('points', res.data.points);
+            this.setData({ points: res.data.points });
+            this.checkCanExchange();
           }
         }
-      }
-    });
-
-    wx.request({
-      url: getApp().globalData.baseUrl + '/user/points',
-      method: 'GET',
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const points = res.data.data.points;
-          wx.setStorageSync('points', points);
-          this.setData({ points });
-          this.checkCanExchange();
-        }
-      }
-    });
+      });
+    }
   },
 
   // 加载商品详情
   loadProductDetail(id) {
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/products/' + id,
+      url: app.globalData.backendBase + '/api/shop/products/' + id,
       method: 'GET',
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const product = res.data.data;
+        if (res.statusCode === 200 && res.data && res.data.ok) {
+          const product = res.data.item;
           this.setData({ 
             product,
             loading: false
@@ -240,34 +216,34 @@ Page({
   submitExchange() {
     this.setData({ submitting: true });
 
-    const { product, exchangeCount } = this.data;
-    const totalPoints = product.points * exchangeCount;
+    const { product } = this.data;
 
+    // 后端当前一次请求只支持兑换 1 件物品
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/exchange',
+      url: app.globalData.backendBase + '/api/shop/exchange',
       method: 'POST',
       data: {
-        productId: product.id,
-        count: exchangeCount,
-        points: totalPoints
+        item_id: product.id
       },
       header: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + (wx.getStorageSync('token') || '')
+        'Authorization': 'Bearer ' + (wx.getStorageSync('catplan_token') || wx.getStorageSync('token') || '')
       },
       success: (res) => {
         this.setData({ submitting: false });
         
-        if (res.statusCode === 200 && res.data.code === 0) {
+        if (res.statusCode === 200 && res.data && res.data.ok) {
           // 兑换成功
           wx.showModal({
             title: '兑换成功',
-            content: `已成功兑换"${product.name}" x${exchangeCount}\n扣除${totalPoints}积分`,
+            content: `已成功兑换"${product.name}"\n扣除${res.data.points_spent || product.points}积分`,
             showCancel: false,
             confirmText: '查看记录',
             success: () => {
               // 更新本地积分缓存
-              const newPoints = this.data.points - totalPoints;
+              const newPoints = typeof res.data.remaining_points === 'number'
+                ? res.data.remaining_points
+                : this.data.points - (res.data.points_spent || product.points);
               wx.setStorageSync('points', newPoints);
               
               // 跳转到兑换历史页

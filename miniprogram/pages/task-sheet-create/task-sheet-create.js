@@ -34,7 +34,7 @@ Page({
     }
 
     wx.request({
-      url: app.globalData.baseUrl + '/api/tasks?date=' + date + '&applicant_openid=' + openid,
+      url: app.globalData.backendBase + '/api/tasks?date=' + date + '&applicant_openid=' + openid,
       method: 'GET',
       success: (res) => {
         if (res.data && res.data.ok) {
@@ -131,7 +131,7 @@ Page({
       const promises = newTasks.map(task => {
         return new Promise((resolve) => {
           wx.request({
-            url: app.globalData.baseUrl + '/api/tasks',
+            url: app.globalData.backendBase + '/api/tasks',
             method: 'POST',
             data: {
               applicant_openid: openid,
@@ -153,7 +153,7 @@ Page({
       const allTaskIds = [...selectedTasks, ...newTaskIds.filter(id => id !== null)];
       
       wx.request({
-        url: app.globalData.baseUrl + '/api/task-sheets',
+        url: app.globalData.backendBase + '/api/task-sheets',
         method: 'POST',
         data: {
           title: formData.title || formData.date + ' 任务单',

@@ -1,4 +1,6 @@
 // pages/shop/list/list.js
+const app = getApp();
+
 Page({
   data: {
     productList: [],
@@ -26,37 +28,13 @@ Page({
     }
   },
 
-  // 检查用户类型
+  // 检查用户类型（基于登录时缓存的信息）
   checkUserType() {
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.setData({
-        userInfo,
-        isTypeA: userInfo.userType === 'A'
-      });
-    } else {
-      // 从后端获取用户信息
-      this.fetchUserInfo();
-    }
-  },
-
-  fetchUserInfo() {
-    wx.request({
-      url: getApp().globalData.baseUrl + '/user/info',
-      method: 'GET',
-      success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const userInfo = res.data.data;
-          wx.setStorageSync('userInfo', userInfo);
-          this.setData({
-            userInfo,
-            isTypeA: userInfo.userType === 'A'
-          });
-        }
-      },
-      fail: (err) => {
-        console.error('获取用户信息失败', err);
-      }
+    const cachedUser = wx.getStorageSync('catplan_user') || null;
+    const userType = wx.getStorageSync('catplan_user_type') || 'A';
+    this.setData({
+      userInfo: cachedUser,
+      isTypeA: typeof userType === 'string' && userType.indexOf('A') !== -1
     });
   },
 
@@ -64,36 +42,19 @@ Page({
   loadProductList(isLoadMore = false) {
     this.setData({ loading: true });
 
-    const { page, pageSize } = this.data;
-    
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/products',
+      url: app.globalData.backendBase + '/api/shop/products',
       method: 'GET',
-      data: {
-        page: isLoadMore ? page + 1 : 1,
-        pageSize
-      },
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const { list, total, page: currentPage, pageSize: size } = res.data.data;
-          
-          if (isLoadMore) {
-            this.setData({
-              productList: [...this.data.productList, ...list],
-              page: currentPage,
-              loading: false,
-              hasMore: this.data.productList.length + list.length < total
-            });
-          } else {
-            this.setData({
-              productList: list,
-              page: currentPage,
-              loading: false,
-              hasMore: list.length < total
-            });
-          }
-          
-          // 停止下拉刷新
+        if (res.statusCode === 200 && res.data && res.data.ok) {
+          const items = res.data.items || [];
+          // 当前后端未提供分页，这里一次性加载全部商品
+          this.setData({
+            productList: items,
+            page: 1,
+            loading: false,
+            hasMore: false
+          });
           wx.stopPullDownRefresh();
         } else {
           this.setData({ loading: false });

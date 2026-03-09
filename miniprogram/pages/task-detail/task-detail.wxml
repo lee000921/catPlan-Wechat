@@ -1,69 +1,128 @@
 <view class="container">
   <!-- 加载中 -->
-  <view wx:if="{{loading}}" class="loading">加载中...</view>
+  <view wx:if="{{loading}}" class="loading-wrapper">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
 
   <!-- 任务详情 -->
-  <view wx:if="{{!loading && task}}" class="task-detail">
-    <!-- 任务头部 -->
-    <view class="task-header">
-      <text class="task-title">{{task.title}}</text>
-      <view class="task-status status-{{task.status}}">
-        {{task.status === 'pending' ? '待审批' : task.status === 'approved' ? '已通过' : task.status === 'rejected' ? '已拒绝' : '已完成'}}
-      </view>
-    </view>
-
-    <!-- 任务描述 -->
-    <view class="task-section">
-      <text class="section-title">任务描述</text>
-      <text class="task-desc">{{task.description || '暂无描述'}}</text>
-    </view>
-
-    <!-- 任务信息 -->
-    <view class="task-info">
-      <view class="info-item">
-        <text class="info-label">申请人：</text>
-        <text class="info-value">{{task.applicant_profile ? task.applicant_profile.nickName : '未知用户'}}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">任务积分：</text>
-        <text class="info-value points">{{task.points}} 碎片</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">创建时间：</text>
-        <text class="info-value">{{task.created_at ? task.created_at.substring(0, 10) : '-'}}</text>
-      </view>
-    </view>
-
-    <!-- 审批记录 -->
-    <view class="approvals-section" wx:if="{{approvals && approvals.length > 0}}">
-      <text class="section-title">审批记录</text>
-      <view wx:for="{{approvals}}" wx:key="id" class="approval-item">
-        <view class="approval-header">
-          <text class="approver-name">{{item.approver_profile ? item.approver_profile.nickName : '审批人'}}</text>
-          <text class="approval-status status-{{item.status}}">
-            {{item.status === 'approved' ? '已通过' : '已拒绝'}}
+  <view wx:if="{{!loading && task}}" class="task-content">
+    <!-- 标题卡片 -->
+    <view class="card title-card status-{{task.status}}">
+      <view class="title-row">
+        <text class="task-title">{{task.title}}</text>
+        <view class="status-badge">
+          <text class="status-text">
+            {{task.status === 'pending' ? '待审批' : task.status === 'approved' ? '已通过' : task.status === 'rejected' ? '已拒绝' : '已完成'}}
           </text>
         </view>
-        <text wx:if="{{item.comment}}" class="approval-comment">{{item.comment}}</text>
-        <text class="approval-date">{{item.created_at ? item.created_at.substring(0, 16) : '-'}}</text>
       </view>
     </view>
 
-    <!-- 审批表单（仅 B 类用户且任务状态为 pending 时显示） -->
-    <view class="approval-form" wx:if="{{showApprovalForm}}">
+    <!-- 描述卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-title">任务描述</text>
+      </view>
+      <view class="desc-content">
+        <text class="desc-text">{{task.description || '暂无描述'}}</text>
+      </view>
+    </view>
+
+    <!-- 信息卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-title">任务信息</text>
+      </view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-icon">👤</text>
+          <view class="info-content">
+            <text class="info-label">申请人</text>
+            <text class="info-value">
+              {{task.applicant_profile ? task.applicant_profile.nickName : '未知用户'}}
+            </text>
+          </view>
+        </view>
+        <view class="info-item">
+          <text class="info-icon">💎</text>
+          <view class="info-content">
+            <text class="info-label">任务积分</text>
+            <text class="info-value highlight">{{task.points}} 碎片</text>
+          </view>
+        </view>
+        <view class="info-item">
+          <text class="info-icon">📅</text>
+          <view class="info-content">
+            <text class="info-label">创建时间</text>
+            <text class="info-value">
+              {{task.created_at ? task.created_at.substring(0, 10) : '-'}}
+            </text>
+          </view>
+        </view>
+        <view class="info-item">
+          <text class="info-icon">🏷</text>
+          <view class="info-content">
+            <text class="info-label">当前状态</text>
+            <text class="info-value">
+              {{task.status === 'pending' ? '待审批' : task.status === 'approved' ? '已通过' : task.status === 'rejected' ? '已拒绝' : '已完成'}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 审批记录卡片 -->
+    <view class="card" wx:if="{{approvals && approvals.length > 0}}">
+      <view class="card-header">
+        <text class="card-title">审批记录</text>
+      </view>
+      <view class="timeline">
+        <view wx:for="{{approvals}}" wx:key="id" class="timeline-item">
+          <view class="timeline-line">
+            <view class="timeline-dot {{item.status}}"></view>
+          </view>
+          <view class="timeline-content">
+            <view class="approval-header">
+              <text class="approver-name">
+                {{item.approver_profile ? item.approver_profile.nickName : '审批人'}}
+              </text>
+              <text class="approval-status {{item.status}}">
+                {{item.status === 'approved' ? '已通过' : '已拒绝'}}
+              </text>
+            </view>
+            <text wx:if="{{item.comment}}" class="approval-comment">{{item.comment}}</text>
+            <text class="approval-date">
+              {{item.created_at ? item.created_at.substring(0, 16) : '-'}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 审批表单卡片（仅 B 类用户且任务状态为 pending 时显示） -->
+    <view class="card approval-form" wx:if="{{showApprovalForm}}">
       <text class="section-title">审批操作</text>
-      
+
       <!-- 审批状态选择 -->
       <view class="form-group">
         <view class="form-label">
           <text class="label-text">审批决定</text>
         </view>
         <view class="radio-group">
-          <label class="radio-label {{approvalForm.status === 'approved' ? 'checked' : ''}}" bindtap="selectApprovalStatus" data-status="approved">
+          <label
+            class="radio-label {{approvalForm.status === 'approved' ? 'checked' : ''}}"
+            bindtap="selectApprovalStatus"
+            data-status="approved"
+          >
             <view class="radio-dot {{approvalForm.status === 'approved' ? 'active' : ''}}"></view>
             <text>通过</text>
           </label>
-          <label class="radio-label {{approvalForm.status === 'rejected' ? 'checked' : ''}}" bindtap="selectApprovalStatus" data-status="rejected">
+          <label
+            class="radio-label {{approvalForm.status === 'rejected' ? 'checked' : ''}}"
+            bindtap="selectApprovalStatus"
+            data-status="rejected"
+          >
             <view class="radio-dot {{approvalForm.status === 'rejected' ? 'active' : ''}}"></view>
             <text>拒绝</text>
           </label>
@@ -76,8 +135,8 @@
           <text class="label-text">审批意见</text>
         </view>
         <view class="textarea-wrapper">
-          <textarea 
-            class="approval-comment" 
+          <textarea
+            class="approval-comment"
             placeholder="请输入审批意见（可选）"
             maxlength="200"
             bindinput="onCommentInput"
@@ -96,17 +155,23 @@
       </view>
     </view>
 
-    <!-- 完成按钮（仅 A 类用户且任务状态为 approved 时显示） -->
-    <view class="complete-section" wx:if="{{showCompleteButton}}">
-      <button class="complete-btn" type="primary" bindtap="onCompleteTask" disabled="{{submitting}}">
-        {{submitting ? '提交中...' : '完成任务'}}
+    <!-- 完成任务卡片（仅 A 类用户且任务状态为 approved 时显示） -->
+    <view class="card complete-card" wx:if="{{showCompleteButton}}">
+      <view class="complete-info">
+        <text class="complete-hint">确认后将获得积分奖励</text>
+        <text class="complete-points">完成本任务可获得 {{task.points}} 碎片</text>
+      </view>
+      <button class="btn-complete" bindtap="onCompleteTask" disabled="{{submitting}}">
+        <text class="btn-text">{{submitting ? '提交中...' : '完成任务'}}</text>
       </button>
     </view>
   </view>
 
   <!-- 无数据 -->
-  <view wx:if="{{!loading && !task}}" class="empty">
+  <view wx:if="{{!loading && !task}}" class="empty-wrapper">
+    <text class="empty-icon">⚠️</text>
     <text class="empty-text">任务不存在</text>
+    <text class="empty-hint">可以返回上一页重新尝试</text>
     <button class="back-btn" bindtap="goBack">返回</button>
   </view>
 </view>

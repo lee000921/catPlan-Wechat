@@ -107,7 +107,7 @@ Page({
     const { formData } = this.data;
 
     wx.request({
-      url: app.globalData.baseUrl + '/api/tasks',
+      url: app.globalData.backendBase + '/api/tasks',
       method: 'POST',
       data: {
         applicant_openid: openid,
@@ -149,7 +149,8 @@ Page({
     }
 
     wx.request({
-      url: app.globalData.baseUrl + '/api/periodic-tasks/periodic',
+      // 使用基于 tasks 表的新周期任务 API
+      url: app.globalData.backendBase + '/api/periodic-tasks',
       method: 'POST',
       data: {
         applicant_openid: openid,

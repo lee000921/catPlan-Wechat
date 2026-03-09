@@ -100,11 +100,11 @@ Page({
   // 加载商品详情
   loadProductDetail(id) {
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/products/' + id,
+      url: getApp().globalData.backendBase + '/api/shop/products/' + id,
       method: 'GET',
       success: (res) => {
-        if (res.statusCode === 200 && res.data.code === 0) {
-          const product = res.data.data;
+        if (res.statusCode === 200 && res.data && res.data.ok) {
+          const product = res.data.item;
           this.setData({ 
             product,
             loading: false
@@ -244,30 +244,30 @@ Page({
     const totalPoints = product.points * exchangeCount;
 
     wx.request({
-      url: getApp().globalData.baseUrl + '/shop/exchange',
+      url: getApp().globalData.backendBase + '/api/shop/exchange',
       method: 'POST',
       data: {
-        productId: product.id,
-        count: exchangeCount,
-        points: totalPoints
+        item_id: product.id
       },
       header: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + (wx.getStorageSync('token') || '')
+        'Authorization': 'Bearer ' + (wx.getStorageSync('catplan_token') || wx.getStorageSync('token') || '')
       },
       success: (res) => {
         this.setData({ submitting: false });
         
-        if (res.statusCode === 200 && res.data.code === 0) {
+        if (res.statusCode === 200 && res.data && res.data.ok) {
           // 兑换成功
           wx.showModal({
             title: '兑换成功',
-            content: `已成功兑换"${product.name}" x${exchangeCount}\n扣除${totalPoints}积分`,
+            content: `已成功兑换"${product.name}"\n扣除${res.data.points_spent || totalPoints}积分`,
             showCancel: false,
             confirmText: '查看记录',
             success: () => {
               // 更新本地积分缓存
-              const newPoints = this.data.points - totalPoints;
+              const newPoints = typeof res.data.remaining_points === 'number'
+                ? res.data.remaining_points
+                : this.data.points - (res.data.points_spent || totalPoints);
               wx.setStorageSync('points', newPoints);
               
               // 跳转到兑换历史页
@@ -279,7 +279,7 @@ Page({
         } else {
           wx.showModal({
             title: '兑换失败',
-            content: res.data.message || '请稍后重试',
+            content: (res.data && res.data.error) || (res.data && res.data.message) || '请稍后重试',
             showCancel: false
           });
         }
