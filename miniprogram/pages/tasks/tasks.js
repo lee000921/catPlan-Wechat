@@ -8,6 +8,7 @@ Page({
     userInfo: null,
     openid: '',
     userType: 'A', // A: 申请者, B: 审批者, AB: 双重角色
+    fabExpanded: false,
     showMyApprovals: false // 是否显示我审批过的任务（仅审批者）
   },
 
@@ -190,5 +191,24 @@ Page({
         }
       }
     });
-  }
+  },
+
+  // 创建周期任务
+  onCreatePeriodicTask() {
+    wx.navigateTo({
+      url: '/pages/periodic-task-create/periodic-task-create'
+    });
+  },
+
+  // 创建任务单
+  onCreateTaskSheet() {
+    wx.navigateTo({
+      url: '/pages/task-sheet-create/task-sheet-create'
+    });
+  },
+
+  // 切换 FAB 展开状态
+  onFabToggle() {
+    this.setData({ fabExpanded: !this.data.fabExpanded });
+  },
 });

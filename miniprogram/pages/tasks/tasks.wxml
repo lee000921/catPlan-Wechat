@@ -147,11 +147,25 @@
     <view class="safe-bottom"></view>
   </scroll-view>
 
-  <!-- 悬浮创建按钮（A类和AB类用户可见） -->
-  <view class="fab-container" wx:if="{{userType === 'A' || (userType && userType.includes('A'))}}">
-    <button class="fab-main" bindtap="onSubmitTask">
+  <!-- 悬浮创建按钮组 -->
+  <view class="fab-container {{fabExpanded ? 'show-extended' : ''}}" wx:if="{{userType === 'A' || (userType && userType.includes('A'))}}">
+    <!-- 主按钮 -->
+    <button class="fab-main" bindtap="onFabToggle">
       <text class="fab-icon">✨</text>
     </button>
+    
+    <!-- 扩展按钮 -->
+    <view class="fab-extended">
+      <button class="fab-ext-btn" catchtap="onSubmitTask">
+        <text class="ext-icon">📝</text>
+        <text class="ext-text">创建任务</text>
+      </button>
+      <button class="fab-ext-btn" catchtap="onCreateTaskSheet">
+        <text class="ext-icon">📋</text>
+        <text class="ext-text">创建任务单</text>
+      </button>
+    </view>
+    
     <view class="fab-ripple"></view>
   </view>
 </view>

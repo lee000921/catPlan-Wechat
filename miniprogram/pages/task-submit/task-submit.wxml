@@ -1,28 +1,59 @@
+<!--
+  任务提交页 - 支持单次任务和周期任务
+  Co-authored-by: 丹青 ✏️
+-->
 <view class="container">
   <!-- 顶部装饰 -->
-  <view class="top-decoration"></view>
+  <view class="header-bg">
+    <view class="header-pattern"></view>
+  </view>
   
   <!-- 页面标题 -->
   <view class="page-header">
-    <view class="header-icon">📝</view>
-    <view class="header-text">
-      <text class="page-title">创建新任务</text>
-      <text class="page-subtitle">提交任务申请，等待审批者审核</text>
+    <view class="header-icon-wrapper">
+      <text class="header-icon">{{taskType === 'periodic' ? '🔄' : '📝'}}</text>
+    </view>
+    <view class="header-content">
+      <text class="page-title">{{taskType === 'periodic' ? '创建周期任务' : '创建单次任务'}}</text>
+      <text class="page-subtitle">{{taskType === 'periodic' ? '设置周期性自动生成的任务' : '提交任务申请，等待审批者审核'}}</text>
     </view>
   </view>
 
-  <!-- 表单卡片 -->
-  <view class="form-card">
-    <!-- 任务标题 -->
-    <view class="form-group">
-      <view class="form-label">
-        <text class="label-text required">任务标题</text>
-        <text class="label-icon">✏️</text>
+  <!-- 表单区域 -->
+  <view class="form-wrapper">
+    
+    <!-- 任务类型选择 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-icon">📋</text>
+        <text class="card-title">任务类型</text>
+        <text class="required-mark">*</text>
       </view>
-      <view class="input-wrapper">
+      <view class="type-selector">
+        <view class="type-item {{taskType === 'single' ? 'active' : ''}}" bindtap="selectTaskType" data-type="single">
+          <text class="type-icon">📝</text>
+          <text class="type-title">单次任务</text>
+          <text class="type-desc">只执行一次</text>
+        </view>
+        <view class="type-item {{taskType === 'periodic' ? 'active' : ''}}" bindtap="selectTaskType" data-type="periodic">
+          <text class="type-icon">🔄</text>
+          <text class="type-title">周期任务</text>
+          <text class="type-desc">定期自动生成</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 任务标题卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-icon">✏️</text>
+        <text class="card-title">任务标题</text>
+        <text class="required-mark">*</text>
+      </view>
+      <view class="input-area">
         <input 
           class="form-input" 
-          placeholder="请输入任务标题（最多100字）"
+          placeholder="请输入任务标题（最多 100 字）"
           maxlength="100"
           bindinput="onTitleInput"
           value="{{formData.title}}"
@@ -31,13 +62,13 @@
       </view>
     </view>
 
-    <!-- 任务描述 -->
-    <view class="form-group">
-      <view class="form-label">
-        <text class="label-text">任务描述</text>
-        <text class="label-icon">📄</text>
+    <!-- 任务描述卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-icon">📄</text>
+        <text class="card-title">任务描述</text>
       </view>
-      <view class="textarea-wrapper">
+      <view class="textarea-area">
         <textarea 
           class="form-textarea" 
           placeholder="请详细描述任务内容、要求和完成标准..."
@@ -49,14 +80,16 @@
       </view>
     </view>
 
-    <!-- 任务积分 -->
-    <view class="form-group">
-      <view class="form-label">
-        <text class="label-text required">任务积分</text>
-        <text class="label-icon">💎</text>
+    <!-- 任务积分卡片 -->
+    <view class="card">
+      <view class="card-header">
+        <text class="card-icon">💎</text>
+        <text class="card-title">任务积分</text>
+        <text class="required-mark">*</text>
       </view>
-      <view class="points-wrapper">
-        <view class="points-input-container">
+      <view class="points-area">
+        <view class="points-input-box">
+          <text class="points-prefix">+</text>
           <input 
             class="points-input" 
             type="number"
@@ -64,35 +97,102 @@
             bindinput="onPointsInput"
             value="{{formData.points}}"
           />
-          <text class="points-unit">碎片</text>
+          <text class="points-suffix">碎片</text>
         </view>
-        <view class="points-info">
-          <text class="info-title">任务积分说明</text>
-          <text class="info-detail">完成任务后可获得的碎片数量，建议根据任务难度合理设置</text>
+        <view class="points-tips">
+          <text class="tips-icon">💡</text>
+          <text class="tips-text">建议根据任务难度设置合理积分</text>
         </view>
       </view>
     </view>
 
-    <!-- 任务预览 -->
-    <view class="preview-section" wx:if="{{formData.title || formData.description}}">
-      <view class="preview-header">
-        <text class="preview-title">任务预览</text>
+    <!-- 周期任务配置（仅周期任务显示） -->
+    <view class="card" wx:if="{{taskType === 'periodic'}}">
+      <view class="card-header">
+        <text class="card-icon">📅</text>
+        <text class="card-title">周期设置</text>
+        <text class="required-mark">*</text>
       </view>
-      <view class="preview-content">
-        <view class="preview-title-text" wx:if="{{formData.title}}">{{formData.title}}</view>
-        <view class="preview-desc-text" wx:if="{{formData.description}}">{{formData.description}}</view>
-        <view class="preview-points" wx:if="{{formData.points}}">
-          <text class="points-value">{{formData.points}}</text>
-          <text class="points-label">碎片</text>
+      
+      <!-- 周期类型 -->
+      <view class="form-group">
+        <text class="label">周期频率</text>
+        <view class="radio-group">
+          <view class="radio-item {{formData.periodic_type === 'daily' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="daily">
+            <text>📅 每天</text>
+          </view>
+          <view class="radio-item {{formData.periodic_type === 'weekly' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="weekly">
+            <text>📆 每周</text>
+          </view>
+          <view class="radio-item {{formData.periodic_type === 'monthly' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="monthly">
+            <text>🗓️ 每月</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 每天 -->
+      <view class="form-group" wx:if="{{formData.periodic_type === 'daily'}}">
+        <text class="label">每几天执行一次</text>
+        <input class="input" type="number" placeholder="1" bindinput="onEveryDaysInput" value="{{formData.every_days}}" />
+      </view>
+
+      <!-- 每周 -->
+      <view class="form-group" wx:if="{{formData.periodic_type === 'weekly'}}">
+        <text class="label">选择星期（可多选）</text>
+        <view class="weekday-selector">
+          <view wx:for="{{[1,2,3,4,5,6,7]}}" wx:key="*this" 
+                class="weekday-item {{formData.weekdays.includes(item) ? 'selected' : ''}}" 
+                bindtap="toggleWeekday" data-day="{{item}}">
+            {{['日','一','二','三','四','五','六'][item]}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 每月 -->
+      <view class="form-group" wx:if="{{formData.periodic_type === 'monthly'}}">
+        <text class="label">每月几号</text>
+        <input class="input" type="number" placeholder="1-31" bindinput="onDayOfMonthInput" value="{{formData.day_of_month}}" />
+      </view>
+
+      <!-- 有效期 -->
+      <view class="form-group">
+        <text class="label">开始日期</text>
+        <picker mode="date" value="{{formData.start_date}}" bindchange="onStartDateChange">
+          <view class="picker">{{formData.start_date || '选择开始日期'}}</view>
+        </picker>
+      </view>
+
+      <view class="form-group">
+        <text class="label">结束日期（可选）</text>
+        <picker mode="date" value="{{formData.end_date}}" bindchange="onEndDateChange">
+          <view class="picker">{{formData.end_date || '选择结束日期'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 任务预览 -->
+    <view class="preview-card" wx:if="{{formData.title}}">
+      <view class="preview-header">
+        <text class="preview-badge">{{taskType === 'periodic' ? '周期任务' : '单次任务'}}</text>
+        <text class="preview-title">{{formData.title}}</text>
+      </view>
+      <view class="preview-body">
+        <text class="preview-desc" wx:if="{{formData.description}}">{{formData.description}}</text>
+        <view class="preview-footer">
+          <text class="preview-points">+{{formData.points || 0}} 碎片</text>
+          <text wx:if="{{taskType === 'periodic'}}" class="preview-periodic">
+            {{formData.periodic_type === 'daily' ? '每天' : formData.periodic_type === 'weekly' ? '每周' : '每月'}}执行
+          </text>
         </view>
       </view>
     </view>
   </view>
 
   <!-- 底部提交区域 -->
-  <view class="bottom-section">
-    <view class="tips">
-      <text class="tip-text">💡 提示：任务创建后不可修改，请仔细填写</text>
+  <view class="bottom-bar">
+    <view class="submit-tips">
+      <text class="tips-icon">💡</text>
+      <text class="tips-text">{{taskType === 'periodic' ? '周期任务审批通过后会自动生成实例' : '任务创建后不可修改，请仔细填写'}}</text>
     </view>
     <button 
       class="submit-btn" 
@@ -100,10 +200,10 @@
       disabled="{{submitting || !formData.title || !formData.points}}"
       loading="{{submitting}}"
     >
-      <view class="btn-content" wx:if="{{!submitting}}">
+      <text class="btn-content" wx:if="{{!submitting}}">
         <text class="btn-icon">🚀</text>
-        <text class="btn-text">提交任务</text>
-      </view>
+        <text class="btn-text">{{taskType === 'periodic' ? '创建周期任务' : '提交任务'}}</text>
+      </text>
       <text class="btn-loading" wx:else>提交中...</text>
     </button>
   </view>

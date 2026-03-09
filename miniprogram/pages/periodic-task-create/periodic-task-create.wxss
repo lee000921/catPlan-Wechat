@@ -1,0 +1,128 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 32rpx;
+  padding-bottom: 200rpx;
+}
+
+.page-header {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.page-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #262626;
+  margin-bottom: 12rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #8c8c8c;
+}
+
+.form-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+}
+
+.form-group {
+  margin-bottom: 32rpx;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 16rpx;
+}
+
+.input, .textarea, .picker {
+  width: 100%;
+  padding: 24rpx;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #262626;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.textarea {
+  min-height: 200rpx;
+}
+
+.radio-group {
+  display: flex;
+  gap: 16rpx;
+}
+
+.radio-item {
+  flex: 1;
+  padding: 20rpx;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #8c8c8c;
+  transition: all 0.3s;
+}
+
+.radio-item.active {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.weekday-selector {
+  display: flex;
+  justify-content: space-between;
+  gap: 8rpx;
+}
+
+.weekday-item {
+  flex: 1;
+  padding: 20rpx 0;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #8c8c8c;
+  transition: all 0.3s;
+}
+
+.weekday-item.selected {
+  border-color: #1890ff;
+  background: #1890ff;
+  color: #fff;
+  font-weight: 600;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 28rpx;
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  box-shadow: 0 8rpx 24rpx rgba(24, 144, 255, 0.35);
+}
+
+.submit-btn[disabled] {
+  background: #e0e0e0;
+  box-shadow: none;
+  color: #999;
+}

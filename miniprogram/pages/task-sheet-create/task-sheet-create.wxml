@@ -1,0 +1,98 @@
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">📋 创建任务单</text>
+    <text class="page-subtitle">创建任务单并提交审核</text>
+  </view>
+
+  <!-- 任务单信息 -->
+  <view class="form-section">
+    <view class="form-group">
+      <text class="label">任务单日期 *</text>
+      <picker mode="date" value="{{formData.date}}" bindchange="onDateChange">
+        <view class="picker">{{formData.date || '选择日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="label">任务单标题</text>
+      <input class="input" placeholder="默认：日期 + 任务单" bindinput="onTitleInput" value="{{formData.title}}" />
+    </view>
+  </view>
+
+  <!-- 当天已有任务 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">当天已有任务 ({{todayTasks.length}})</text>
+    </view>
+    
+    <view wx:if="{{todayTasks.length > 0}}" class="task-list">
+      <view wx:for="{{todayTasks}}" wx:key="id" class="task-item {{selectedTasks.includes(item.id) ? 'selected' : ''}}" bindtap="toggleTask" data-id="{{item.id}}">
+        <view class="task-checkbox">
+          <view wx:if="{{selectedTasks.includes(item.id)}}" class="checked">✓</view>
+        </view>
+        <view class="task-info">
+          <view class="task-main">
+            <text class="task-title">{{item.title}}</text>
+            <text class="task-type {{item.is_periodic ? 'periodic' : 'single'}}">{{item.is_periodic ? '🔄 周期任务' : '📝 单次任务'}}</text>
+          </view>
+          <text class="task-points">💎 {{item.points}} 碎片</text>
+        </view>
+      </view>
+    </view>
+    
+    <view wx:else class="empty-tasks">
+      <text>当天暂无任务</text>
+      <button class="create-task-btn" bindtap="goToCreateTask">去创建任务</button>
+    </view>
+  </view>
+
+  <!-- 添加新任务 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">或添加新任务</text>
+    </view>
+
+    <view class="form-group">
+      <text class="label">任务标题</text>
+      <input class="input" placeholder="请输入任务标题" bindinput="onNewTaskTitleInput" value="{{newTask.title}}" />
+    </view>
+
+    <view class="form-group">
+      <text class="label">任务描述</text>
+      <textarea class="textarea" placeholder="任务详细描述" bindinput="onNewTaskDescInput" value="{{newTask.description}}" />
+    </view>
+
+    <view class="form-group">
+      <text class="label">任务积分</text>
+      <input class="input" type="number" placeholder="0" bindinput="onNewTaskPointsInput" value="{{newTask.points}}" />
+    </view>
+
+    <button class="add-task-btn" bindtap="addNewTask">添加到任务单</button>
+  </view>
+
+  <!-- 已选任务预览 -->
+  <view wx:if="{{selectedTasks.length > 0 || newTasks.length > 0}}" class="preview-section">
+    <view class="section-header">
+      <text class="section-title">已添加任务 ({{selectedTasks.length + newTasks.length}})</text>
+    </view>
+    
+    <view wx:if="{{selectedTasks.length > 0}}" class="preview-list">
+      <view wx:for="{{selectedTasks}}" wx:key="*this" class="preview-item">
+        <text class="preview-icon">📋</text>
+        <text class="preview-title">{{getTaskTitle(item)}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{newTasks.length > 0}}" class="preview-list">
+      <view wx:for="{{newTasks}}" wx:key="index" class="preview-item new">
+        <text class="preview-icon">✨</text>
+        <text class="preview-title">{{item.title}}</text>
+        <text class="preview-points">{{item.points}} 碎片</text>
+      </view>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="onSubmit" disabled="{{submitting || (!formData.title && selectedTasks.length === 0 && newTasks.length === 0)}}">
+    {{submitting ? '提交中...' : '提交任务单审核'}}
+  </button>
+</view>

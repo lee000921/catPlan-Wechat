@@ -2,120 +2,179 @@ const app = getApp();
 
 Page({
   data: {
-    backendBase: '',
-    userInfo: null,
-    openid: '',
+    taskType: 'single', // 'single' 或 'periodic'
     formData: {
       title: '',
       description: '',
-      points: 10
+      points: '',
+      // 周期任务配置
+      periodic_type: 'daily',
+      every_days: '1',
+      weekdays: [1],
+      day_of_month: '1',
+      start_date: '',
+      end_date: ''
     },
     submitting: false
   },
 
-  onLoad() {
-    // 从全局配置获取后端地址
-    if (app && app.globalData && app.globalData.backendBase) {
-      this.setData({ backendBase: app.globalData.backendBase });
+  onLoad(options) {
+    // 设置默认开始日期为今天
+    const today = new Date().toISOString().slice(0, 10);
+    this.setData({ 'formData.start_date': today });
+  },
+
+  // 选择任务类型
+  selectTaskType(e) {
+    this.setData({ taskType: e.currentTarget.dataset.type });
+  },
+
+  // 输入处理
+  onTitleInput(e) {
+    this.setData({ 'formData.title': e.detail.value });
+  },
+
+  onDescriptionInput(e) {
+    this.setData({ 'formData.description': e.detail.value });
+  },
+
+  onPointsInput(e) {
+    this.setData({ 'formData.points': e.detail.value });
+  },
+
+  // 周期任务配置
+  selectPeriodicType(e) {
+    this.setData({ 'formData.periodic_type': e.currentTarget.dataset.type });
+  },
+
+  onEveryDaysInput(e) {
+    this.setData({ 'formData.every_days': e.detail.value || '1' });
+  },
+
+  toggleWeekday(e) {
+    const day = e.currentTarget.dataset.day;
+    let weekdays = this.data.formData.weekdays;
+    
+    if (weekdays.includes(day)) {
+      weekdays = weekdays.filter(d => d !== day);
+    } else {
+      weekdays.push(day);
     }
     
-    // 从缓存获取用户信息
-    const userInfo = wx.getStorageSync('catplan_user');
-    const openid = wx.getStorageSync('catplan_user_openid');
-    if (userInfo && openid) {
-      this.setData({ userInfo, openid });
-    }
+    this.setData({ 'formData.weekdays': weekdays.sort() });
   },
 
-  // 输入标题
-  onTitleInput(e) {
-    this.setData({
-      'formData.title': e.detail.value
-    });
+  onDayOfMonthInput(e) {
+    this.setData({ 'formData.day_of_month': e.detail.value || '1' });
   },
 
-  // 输入描述
-  onDescriptionInput(e) {
-    this.setData({
-      'formData.description': e.detail.value
-    });
+  onStartDateChange(e) {
+    this.setData({ 'formData.start_date': e.detail.value });
   },
 
-  // 输入积分
-  onPointsInput(e) {
-    const points = parseInt(e.detail.value) || 0;
-    this.setData({
-      'formData.points': points
-    });
+  onEndDateChange(e) {
+    this.setData({ 'formData.end_date': e.detail.value });
   },
 
-  // 提交表单
+  // 提交任务
   onSubmit() {
-    const { title, description, points } = this.data.formData;
-    const { openid, backendBase } = this.data;
-
-    if (!title.trim()) {
-      wx.showToast({
-        title: '请输入任务标题',
-        icon: 'none'
-      });
-      return;
-    }
-
-    if (!points || points <= 0) {
-      wx.showToast({
-        title: '积分必须大于0',
-        icon: 'none'
-      });
-      return;
-    }
+    const { taskType, formData } = this.data;
+    const openid = wx.getStorageSync('catplan_user_openid');
 
     if (!openid) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    if (!formData.title || !formData.points) {
+      wx.showToast({ title: '请填写必填项', icon: 'none' });
       return;
     }
 
     this.setData({ submitting: true });
 
+    if (taskType === 'periodic') {
+      // 创建周期任务
+      this.createPeriodicTask(openid);
+    } else {
+      // 创建单次任务
+      this.createSingleTask(openid);
+    }
+  },
+
+  // 创建单次任务
+  createSingleTask(openid) {
+    const { formData } = this.data;
+
     wx.request({
-      url: `${backendBase}/api/tasks`,
+      url: app.globalData.baseUrl + '/api/tasks',
       method: 'POST',
-      header: {
-        'content-type': 'application/json'
-      },
       data: {
         applicant_openid: openid,
-        title: title.trim(),
-        description: description.trim(),
-        points: points
+        title: formData.title,
+        description: formData.description || '',
+        points: parseInt(formData.points)
       },
       success: (res) => {
         if (res.data && res.data.ok) {
-          wx.showToast({
-            title: '提交成功',
-            icon: 'success',
-            duration: 2000
-          });
-          // 返回任务列表并刷新
+          wx.showToast({ title: '任务已提交审核', icon: 'success' });
           setTimeout(() => {
             wx.navigateBack();
           }, 1500);
         } else {
-          wx.showToast({
-            title: res.data.error || '提交失败',
-            icon: 'none'
-          });
+          wx.showToast({ title: res.data.error || '提交失败', icon: 'none' });
+        }
+      },
+      fail: () => {
+        wx.showToast({ title: '网络错误', icon: 'none' });
+      },
+      complete: () => {
+        this.setData({ submitting: false });
+      }
+    });
+  },
+
+  // 创建周期任务
+  createPeriodicTask(openid) {
+    const { formData } = this.data;
+
+    // 构建周期配置
+    let periodicConfig = {};
+    if (formData.periodic_type === 'daily') {
+      periodicConfig.every_days = parseInt(formData.every_days) || 1;
+    } else if (formData.periodic_type === 'weekly') {
+      periodicConfig.weekdays = formData.weekdays;
+    } else if (formData.periodic_type === 'monthly') {
+      periodicConfig.day_of_month = parseInt(formData.day_of_month) || 1;
+    }
+
+    wx.request({
+      url: app.globalData.baseUrl + '/api/periodic-tasks/periodic',
+      method: 'POST',
+      data: {
+        applicant_openid: openid,
+        title: formData.title,
+        description: formData.description || '',
+        points: parseInt(formData.points),
+        periodic_type: formData.periodic_type,
+        periodic_config: periodicConfig,
+        start_date: formData.start_date,
+        end_date: formData.end_date || null
+      },
+      success: (res) => {
+        if (res.data && res.data.ok) {
+          wx.showToast({ title: '周期任务已创建', icon: 'success' });
+          setTimeout(() => {
+            wx.navigateBack();
+          }, 1500);
+        } else {
+          wx.showToast({ title: res.data.error || '提交失败', icon: 'none' });
+          console.error('周期任务创建失败:', res.data);
         }
       },
       fail: (err) => {
-        console.error('提交任务失败', err);
-        wx.showToast({
-          title: '网络错误',
-          icon: 'none'
-        });
+        wx.showToast({ title: '网络错误', icon: 'none' });
+        console.error('周期任务创建失败:', err);
       },
       complete: () => {
         this.setData({ submitting: false });

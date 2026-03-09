@@ -1,0 +1,83 @@
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">🔄 创建周期任务</text>
+    <text class="page-subtitle">设置周期性自动生成的任务</text>
+  </view>
+
+  <view class="form-section">
+    <!-- 任务标题 -->
+    <view class="form-group">
+      <text class="label">任务标题 *</text>
+      <input class="input" placeholder="请输入任务标题" bindinput="onTitleInput" value="{{formData.title}}" />
+    </view>
+
+    <!-- 任务描述 -->
+    <view class="form-group">
+      <text class="label">任务描述</text>
+      <textarea class="textarea" placeholder="任务详细说明" bindinput="onDescInput" value="{{formData.description}}" />
+    </view>
+
+    <!-- 任务积分 -->
+    <view class="form-group">
+      <text class="label">任务积分 *</text>
+      <input class="input" type="number" placeholder="0" bindinput="onPointsInput" value="{{formData.points}}" />
+    </view>
+
+    <!-- 周期类型 -->
+    <view class="form-group">
+      <text class="label">周期类型</text>
+      <view class="radio-group">
+        <view class="radio-item {{formData.periodic_type === 'daily' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="daily">
+          <text>📅 每天</text>
+        </view>
+        <view class="radio-item {{formData.periodic_type === 'weekly' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="weekly">
+          <text>📆 每周</text>
+        </view>
+        <view class="radio-item {{formData.periodic_type === 'monthly' ? 'active' : ''}}" bindtap="selectPeriodicType" data-type="monthly">
+          <text>🗓️ 每月</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 周期配置 -->
+    <view class="form-group" wx:if="{{formData.periodic_type === 'daily'}}">
+      <text class="label">每几天执行一次</text>
+      <input class="input" type="number" placeholder="1" bindinput="onEveryDaysInput" value="{{formData.every_days}}" />
+    </view>
+
+    <view class="form-group" wx:if="{{formData.periodic_type === 'weekly'}}">
+      <text class="label">选择星期</text>
+      <view class="weekday-selector">
+        <view wx:for="{{[1,2,3,4,5,6,7]}}" wx:key="*this" 
+              class="weekday-item {{formData.weekdays.includes(item) ? 'selected' : ''}}" 
+              bindtap="toggleWeekday" data-day="{{item}}">
+          {{['日','一','二','三','四','五','六'][item]}}
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group" wx:if="{{formData.periodic_type === 'monthly'}}">
+      <text class="label">每月几号</text>
+      <input class="input" type="number" placeholder="1-31" bindinput="onDayOfMonthInput" value="{{formData.day_of_month}}" />
+    </view>
+
+    <!-- 有效期 -->
+    <view class="form-group">
+      <text class="label">开始日期</text>
+      <picker mode="date" value="{{formData.start_date}}" bindchange="onStartDateChange">
+        <view class="picker">{{formData.start_date || '选择开始日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="label">结束日期（可选）</text>
+      <picker mode="date" value="{{formData.end_date}}" bindchange="onEndDateChange">
+        <view class="picker">{{formData.end_date || '选择结束日期'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="onSubmit" disabled="{{submitting || !formData.title || !formData.points}}">
+    {{submitting ? '提交中...' : '创建周期任务'}}
+  </button>
+</view>

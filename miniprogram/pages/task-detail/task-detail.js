@@ -9,50 +9,42 @@ Page({
     task: null,
     approvals: [],
     loading: true,
-    // 审批表单
     approvalForm: {
       status: 'approved',
       comment: ''
     },
-    submitting: false
+    submitting: false,
+    showApprovalForm: false,
+    showCompleteButton: false
   },
 
   onLoad(options) {
-    // 从全局配置获取后端地址
     if (app && app.globalData && app.globalData.backendBase) {
       this.setData({ backendBase: app.globalData.backendBase });
     }
     
-    // 从缓存获取用户信息
     const userInfo = wx.getStorageSync('catplan_user');
     const openid = wx.getStorageSync('catplan_user_openid');
     const userType = wx.getStorageSync('catplan_user_type') || 'A';
     
-    console.log('Task detail loaded with userType:', userType); // 添加调试日志
+    console.log('=== Task Detail onLoad ===');
+    console.log('UserType:', userType);
+    console.log('OpenID:', openid);
     
     if (userInfo && openid) {
       this.setData({ 
         userInfo, 
         openid,
         userType: userType
-      }, () => {
-        // 数据设置完成后，检查UI条件
-        console.log('Data set complete, checking UI conditions:', {
-          userType: this.data.userType,
-          hasB: this.data.userType === 'B' || (this.data.userType && this.data.userType.includes('B')),
-          taskStatus: this.data.task ? this.data.task.status : 'no task yet'
-        });
       });
     }
     
-    // 获取任务ID
     if (options.id) {
       this.loadTaskDetail(options.id);
     }
   },
 
   onShow() {
-    // 页面显示时刷新用户类型和任务状态
     const userType = wx.getStorageSync('catplan_user_type') || 'A';
     const openid = wx.getStorageSync('catplan_user_openid');
     
@@ -61,13 +53,11 @@ Page({
       openid: openid
     });
     
-    // 如果有任务ID，重新加载任务详情
     if (this.data.task && this.data.task.id) {
       this.loadTaskDetail(this.data.task.id);
     }
   },
 
-  // 加载任务详情
   loadTaskDetail(taskId) {
     if (!this.data.backendBase) {
       console.error('后端地址未配置');
@@ -80,43 +70,43 @@ Page({
       url: `${this.data.backendBase}/api/tasks/${taskId}`,
       method: 'GET',
       success: (res) => {
-        if (res.data && res.data.ok) {
-          console.log('Task loaded:', res.data.task);
-          console.log('User type:', this.data.userType);
+        console.log('=== Task Detail Response ===');
+        console.log('Response:', res.data);
+        
+        if (res.data && res.data.ok && res.data.task) {
+          const task = res.data.task;
+          const userType = this.data.userType;
           
-          // 重新获取用户类型，确保是最新的
-          const userType = wx.getStorageSync('catplan_user_type') || 'A';
-          console.log('User type from storage:', userType);
+          console.log('Current userType:', userType);
           
-          const showApprovalForm = (userType === 'B' || (userType && userType.includes('B'))) && 
-                                   res.data.task.status === 'pending';
+          // 判断是否为审核者（B 类用户）
+          const isBUser = (userType === 'B') || (userType && userType.includes('B'));
+          const isPending = task.status === 'pending';
           
-          const showCompleteButton = (userType === 'A' || (userType && userType.includes('A'))) && 
-                                     res.data.task.status === 'approved';
+          console.log('Is B user:', isBUser);
+          console.log('Is pending:', isPending);
           
-          console.log('Show approval form:', showApprovalForm);
-          console.log('Show complete button:', showCompleteButton);
+          // 只有 B 类用户且任务为 pending 状态才显示审批表单
+          const showApprovalForm = isBUser && isPending;
+          // 非 B 类用户且任务为 approved 状态显示完成按钮
+          const showCompleteButton = !isBUser && task.status === 'approved';
+          
+          console.log('showApprovalForm:', showApprovalForm);
+          console.log('showCompleteButton:', showCompleteButton);
           
           this.setData({
-            task: res.data.task,
+            task: task,
             approvals: res.data.approvals || [],
-            userType: userType, // 更新用户类型
             showApprovalForm: showApprovalForm,
             showCompleteButton: showCompleteButton
           });
         } else {
-          wx.showToast({
-            title: '加载失败',
-            icon: 'none'
-          });
+          wx.showToast({ title: '加载失败', icon: 'none' });
         }
       },
       fail: (err) => {
         console.error('加载任务详情失败', err);
-        wx.showToast({
-          title: '网络错误',
-          icon: 'none'
-        });
+        wx.showToast({ title: '网络错误', icon: 'none' });
       },
       complete: () => {
         this.setData({ loading: false });
@@ -124,33 +114,41 @@ Page({
     });
   },
 
-  // 审批状态改变
-  onApprovalStatusChange(e) {
-    this.setData({
-      'approvalForm.status': e.detail.value
-    });
+  // 选择审批状态
+  selectApprovalStatus(e) {
+    const status = e.currentTarget.dataset.status;
+    console.log('Selected approval status:', status);
+    this.setData({ 'approvalForm.status': status });
   },
 
-  // 审批意见输入
   onCommentInput(e) {
-    this.setData({
-      'approvalForm.comment': e.detail.value
-    });
+    this.setData({ 'approvalForm.comment': e.detail.value });
   },
 
-  // 取消审批
+  // 取消审批 - 返回上一页
   onCancelApproval() {
-    this.setData({
-      approvalForm: {
-        status: 'approved',
-        comment: ''
-      }
-    });
+    console.log('Cancel approval, navigating back');
+    wx.navigateBack();
+  },
+
+  // 返回
+  goBack() {
+    wx.navigateBack();
   },
 
   // 提交审批
   onSubmitApproval() {
-    if (!this.data.task) {
+    console.log('=== Submit Approval ===');
+    console.log('UserType:', this.data.userType);
+    
+    // 再次验证用户类型
+    const userType = wx.getStorageSync('catplan_user_type') || 'A';
+    const isBUser = (userType === 'B') || (userType && userType.includes('B'));
+    
+    console.log('Is B user:', isBUser);
+    
+    if (!isBUser) {
+      wx.showToast({ title: '只有审核者才能审批任务', icon: 'none' });
       return;
     }
 
@@ -158,11 +156,17 @@ Page({
     const { openid, backendBase } = this.data;
     const taskId = this.data.task.id;
 
+    console.log('Task ID:', taskId);
+    console.log('OpenID:', openid);
+    console.log('Status:', status);
+
     if (!openid) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+
+    if (!taskId) {
+      wx.showToast({ title: '任务 ID 无效', icon: 'none' });
       return;
     }
 
@@ -171,38 +175,27 @@ Page({
     wx.request({
       url: `${backendBase}/api/tasks/${taskId}/approve`,
       method: 'POST',
-      header: {
-        'content-type': 'application/json'
-      },
+      header: { 'content-type': 'application/json' },
       data: {
         approver_openid: openid,
         status: status,
         comment: comment
       },
       success: (res) => {
+        console.log('Approval response:', res.data);
+        
         if (res.data && res.data.ok) {
-          wx.showToast({
-            title: '审批成功',
-            icon: 'success',
-            duration: 2000
-          });
-          // 重新加载任务详情
+          wx.showToast({ title: '审批成功', icon: 'success', duration: 2000 });
           setTimeout(() => {
-            this.loadTaskDetail(taskId);
+            wx.navigateBack();
           }, 1500);
         } else {
-          wx.showToast({
-            title: res.data.error || '审批失败',
-            icon: 'none'
-          });
+          wx.showToast({ title: res.data.error || '审批失败', icon: 'none' });
         }
       },
       fail: (err) => {
         console.error('审批失败', err);
-        wx.showToast({
-          title: '网络错误',
-          icon: 'none'
-        });
+        wx.showToast({ title: '网络错误', icon: 'none' });
       },
       complete: () => {
         this.setData({ submitting: false });
@@ -210,36 +203,24 @@ Page({
     });
   },
 
-  // 完成任务
   onCompleteTask() {
-    if (!this.data.task) {
-      return;
-    }
+    if (!this.data.task) return;
 
     const { openid, backendBase } = this.data;
     const taskId = this.data.task.id;
 
     if (!openid) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
+      wx.showToast({ title: '请先登录', icon: 'none' });
       return;
     }
 
     if (this.data.task.status !== 'approved') {
-      wx.showToast({
-        title: '任务未通过审批',
-        icon: 'none'
-      });
+      wx.showToast({ title: '任务未通过审批', icon: 'none' });
       return;
     }
 
     if (this.data.task.applicant_openid !== openid) {
-      wx.showToast({
-        title: '只能完成自己的任务',
-        icon: 'none'
-      });
+      wx.showToast({ title: '只能完成自己的任务', icon: 'none' });
       return;
     }
 
@@ -260,45 +241,20 @@ Page({
     wx.request({
       url: `${backendBase}/api/tasks/${taskId}/complete`,
       method: 'POST',
-      header: {
-        'content-type': 'application/json'
-      },
-      data: {
-        applicant_openid: openid
-      },
+      header: { 'content-type': 'application/json' },
+      data: { applicant_openid: openid },
       success: (res) => {
         if (res.data && res.data.ok) {
-          wx.showToast({
-            title: `完成！获得${res.data.points_earned}碎片`,
-            icon: 'success',
-            duration: 2000
-          });
-          // 返回任务列表页并刷新
+          wx.showToast({ title: `完成！获得${res.data.points_earned}碎片`, icon: 'success', duration: 2000 });
           setTimeout(() => {
-            wx.navigateBack({
-              success: () => {
-                // 获取任务列表页实例并刷新
-                const pages = getCurrentPages();
-                const prevPage = pages[pages.length - 1];
-                if (prevPage && prevPage.loadTasks) {
-                  prevPage.loadTasks();
-                }
-              }
-            });
+            wx.navigateBack();
           }, 1500);
         } else {
-          wx.showToast({
-            title: res.data.error || '完成失败',
-            icon: 'none'
-          });
+          wx.showToast({ title: res.data.error || '完成失败', icon: 'none' });
         }
       },
-      fail: (err) => {
-        console.error('完成任务失败', err);
-        wx.showToast({
-          title: '网络错误',
-          icon: 'none'
-        });
+      fail: () => {
+        wx.showToast({ title: '网络错误', icon: 'none' });
       },
       complete: () => {
         this.setData({ submitting: false });

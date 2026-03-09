@@ -1,17 +1,15 @@
 <view class="container">
   <!-- 加载中 -->
-  <view wx:if="{{loading}}" class="loading">
-    <text>加载中...</text>
-  </view>
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
 
   <!-- 任务详情 -->
   <view wx:if="{{!loading && task}}" class="task-detail">
-    <!-- 任务标题和状态 -->
+    <!-- 任务头部 -->
     <view class="task-header">
       <text class="task-title">{{task.title}}</text>
-      <text class="task-status status-{{task.status}}">
+      <view class="task-status status-{{task.status}}">
         {{task.status === 'pending' ? '待审批' : task.status === 'approved' ? '已通过' : task.status === 'rejected' ? '已拒绝' : '已完成'}}
-      </text>
+      </view>
     </view>
 
     <!-- 任务描述 -->
@@ -32,7 +30,7 @@
       </view>
       <view class="info-item">
         <text class="info-label">创建时间：</text>
-        <text class="info-value">{{task.created_at.substring(0, 10)}}</text>
+        <text class="info-value">{{task.created_at ? task.created_at.substring(0, 10) : '-'}}</text>
       </view>
     </view>
 
@@ -47,11 +45,11 @@
           </text>
         </view>
         <text wx:if="{{item.comment}}" class="approval-comment">{{item.comment}}</text>
-        <text class="approval-date">{{item.created_at.substring(0, 16)}}</text>
+        <text class="approval-date">{{item.created_at ? item.created_at.substring(0, 16) : '-'}}</text>
       </view>
     </view>
 
-    <!-- 审批表单（仅B类用户且任务状态为pending时显示） -->
+    <!-- 审批表单（仅 B 类用户且任务状态为 pending 时显示） -->
     <view class="approval-form" wx:if="{{showApprovalForm}}">
       <text class="section-title">审批操作</text>
       
@@ -59,19 +57,16 @@
       <view class="form-group">
         <view class="form-label">
           <text class="label-text">审批决定</text>
-          <text class="label-icon">📋</text>
         </view>
-        <view class="approval-status">
-          <radio-group class="radio-group" bindchange="onApprovalStatusChange" value="{{approvalForm.status}}">
-            <label class="radio-label {{approvalForm.status === 'approved' ? 'checked' : ''}}">
-              <radio value="approved" checked="{{approvalForm.status === 'approved'}}"/>
-              <text>通过</text>
-            </label>
-            <label class="radio-label {{approvalForm.status === 'rejected' ? 'checked' : ''}}">
-              <radio value="rejected" checked="{{approvalForm.status === 'rejected'}}"/>
-              <text>拒绝</text>
-            </label>
-          </radio-group>
+        <view class="radio-group">
+          <label class="radio-label {{approvalForm.status === 'approved' ? 'checked' : ''}}" bindtap="selectApprovalStatus" data-status="approved">
+            <view class="radio-dot {{approvalForm.status === 'approved' ? 'active' : ''}}"></view>
+            <text>通过</text>
+          </label>
+          <label class="radio-label {{approvalForm.status === 'rejected' ? 'checked' : ''}}" bindtap="selectApprovalStatus" data-status="rejected">
+            <view class="radio-dot {{approvalForm.status === 'rejected' ? 'active' : ''}}"></view>
+            <text>拒绝</text>
+          </label>
         </view>
       </view>
 
@@ -79,7 +74,6 @@
       <view class="form-group">
         <view class="form-label">
           <text class="label-text">审批意见</text>
-          <text class="label-icon">💬</text>
         </view>
         <view class="textarea-wrapper">
           <textarea 
@@ -95,43 +89,16 @@
 
       <!-- 提交按钮 -->
       <view class="approval-actions">
-        <button 
-          class="cancel-btn" 
-          bindtap="onCancelApproval"
-          disabled="{{submitting}}"
-        >
-          <view class="btn-content">
-            <text class="btn-icon">❌</text>
-            <text class="btn-text">取消</text>
-          </view>
-        </button>
-        <button 
-          class="approval-btn" 
-          type="primary" 
-          bindtap="onSubmitApproval"
-          disabled="{{submitting}}"
-          loading="{{submitting}}"
-        >
-          <view class="btn-content" wx:if="{{!submitting}}">
-            <text class="btn-icon">✅</text>
-            <text class="btn-text">提交审批</text>
-          </view>
-          <view class="btn-loading" wx:else>
-            提交中...
-          </view>
+        <button class="cancel-btn" bindtap="onCancelApproval">取消</button>
+        <button class="approval-btn" type="primary" bindtap="onSubmitApproval" disabled="{{submitting}}">
+          {{submitting ? '提交中...' : '提交审批'}}
         </button>
       </view>
     </view>
 
-    <!-- 完成按钮（仅A类用户且任务状态为approved时显示） -->
+    <!-- 完成按钮（仅 A 类用户且任务状态为 approved 时显示） -->
     <view class="complete-section" wx:if="{{showCompleteButton}}">
-      <button 
-        class="complete-btn" 
-        type="primary" 
-        bindtap="onCompleteTask"
-        disabled="{{submitting}}"
-        loading="{{submitting}}"
-      >
+      <button class="complete-btn" type="primary" bindtap="onCompleteTask" disabled="{{submitting}}">
         {{submitting ? '提交中...' : '完成任务'}}
       </button>
     </view>
@@ -140,5 +107,6 @@
   <!-- 无数据 -->
   <view wx:if="{{!loading && !task}}" class="empty">
     <text class="empty-text">任务不存在</text>
+    <button class="back-btn" bindtap="goBack">返回</button>
   </view>
 </view>

@@ -8,7 +8,10 @@
     "pages/shop/list/list",
     "pages/shop/detail/detail",
     "pages/shop/exchange/exchange",
-    "pages/shop/history/history"
+    "pages/shop/history/history",
+    "pages/task-sheet-create/task-sheet-create",
+    "pages/task-sheet-detail/task-sheet-detail",
+    "pages/periodic-task-create/periodic-task-create"
   ],
   "window": {
     "backgroundTextStyle": "light",
